@@ -107,28 +107,129 @@ bt_buf_release: Buffer freed: 0x3fc952a4
 | 7 | **ACL 连接未建立** | ⚠️ **这是我最初的误判**：曾用 `bt bnep0 info` 的 `Free` 字段（始终 20）判断无连接。打开内核日志后发现**连接其实成功了**。该 ioctl 字段**不反映 LE 连接数** | ❌ **误判，已在文档中更正** |
 | 8 | NuttX 的 GATT Server 根本没有实现 | 已确认 `nuttx/wireless/bluetooth/bt_att.c` **就是服务端实现**（含 `att_find_info_req` / `att_find_type_req` / `att_read_type_req` / `att_read_req` / `att_write_req` 等） | ❌ 有实现 |
 | 9 | 连接回调未注册导致 GATT 不工作 | `bt_gatt_connected()` 由 NuttX 内部在连接完成时调用，不依赖应用注册 `bt_conn_cb` | ❌ 无关（且内部头在 apps 中不可用，见 §8） |
+| 10 | `bt_gatt_connected()` 缺少必要初始化 | 读实现：它**只**做 `bt_gatt_foreach_attr(0x0001, 0xffff, connected_cb, conn)`，即仅遍历 CCC 属性处理订阅状态。**ATT 服务端不需要连接后初始化** | ❌ 排除（原假设 1 不成立） |
+| 11 | ATT 请求到了但响应没发出 | **反证**：`bt_att_receive()` 入口就有 `wlinfo("Received ATT code 0x%02x len %u")`（bt_att.c:1755），一条都没有 | ❌ 排除 |
+| 12 | L2CAP 层把 ATT 包抢走了 | `btnet_l2cap_receive` 只是 L2CAP 的 **default 监听者**，仅在找不到 CID 匹配者时才被调用；ATT 已注册 CID 0x0004。且 `bt_l2cap_receive()` 入口的 `wlinfo("Packet for CID %u")` 也无输出 | ❌ 排除 |
+| 13 | HCI ACL 流控没配好（控制器压着不发） | **实测反证**：`Host Buffer Size`(0c33) 已发且参数正确（`param_len=7`，`acl_mtu=68`，`acl_pkts=20`），控制器回 `hci_cmd_complete: opcode 0c33`；`Set Ctl→Host Flow`(0c31) 也已发并被接受；`le_read_buffer_size_complete: status 0` | ❌ 排除 |
+| 14 | VHCI 层包类型判断错误 | 读 `esp32s3_ble.c` 的 `esp32s3_ble_recv_cb()`：`H4_EVT→BT_EVT`、`H4_ACL→BT_ACL_IN`、`H4_ISO→BT_ISO_IN`，**映射正确** | ❌ 排除 |
 
 ---
 
-## 5. 待验证的假设（**从这里继续**）
+## 4.5 ★★ 精确故障点：控制器未通过 VHCI 送上来任何 ACL 数据
 
-### 假设 1（最可能）：`bt_gatt_connected()` 之后缺少必要的 ATT 初始化
+**这是本轮最重要的成果。** 通过在 `esp32s3_ble_recv_cb()` 入口插入日志
+（`syslog("BTSH-HCI: pkt type=0x%02x len=%u")`），直接观测**控制器→主机的
+每一个 HCI 包**，得到决定性数据：
 
-`bt_gatt.c` 的 `bt_gatt_connected()` 在日志中被调用，但**调用之后没有任何
-后续动作**。需要确认它到底做了什么。
-
-**验证方法**：
-```bash
-sed -n '/void bt_gatt_connected/,/^}/p' \
-  ~/openvela/nuttx/wireless/bluetooth/bt_gatt.c
 ```
-重点看：
-- 它是否只是设置内部标志？
-- 它是否应该主动读取对端的 ATT MTU？
-- 是否有依赖某个 `CONFIG_BLUETOOTH_*` 开关而该开关**没开**？
+★ BTSH-HCI 包统计（连接全程）
+    H4_EVT (0x04): 15 个     ← 全部是事件
+    H4_ACL (0x02):  0 个     ← ★ 一个都没有
+    H4_ISO (0x03):  0 个
+    未知类型:        0 个
+```
 
-**关键怀疑**：NuttX 的 `bt_gatt_connected()` 可能是空实现或仅打印日志，
-而真正的"服务端就绪"需要别的动作（例如注册服务变更、或等待客户端发起）。
+即：**控制器连接建立成功（`le_conn_complete: status 0`），但此后
+一个 ACL 数据包都没有通过 VHCI 送上来。**
+
+这一条结论同时解释了为什么三层日志全空：
+
+| 层 | 该层入口日志 | 实测 |
+| --- | --- | --- |
+| VHCI | `esp32s3_ble_recv_cb()` 的 `BTSH-HCI: pkt type=...` | 只有 EVT，**无 ACL** |
+| HCI | `hci_acl()` 的 `wlinfo("handle %u len %u flags %u")` | 无 |
+| L2CAP | `bt_l2cap_receive()` 的 `wlinfo("Packet for CID %u")` | 无 |
+| ATT | `bt_att_receive()` 的 `wlinfo("Received ATT code 0x%02x")` | 无 |
+
+**因此问题不在 NuttX host 栈（HCI/L2CAP/ATT/GATT 四层代码都是好的、
+日志点都验证过能工作），而在「ESP32 控制器 → VHCI → 主机」这段。**
+
+### 复现方法（供接手者复验）
+
+```bash
+# 1. 在 VHCI 回调入口插日志
+F=~/openvela/nuttx/arch/xtensa/src/esp32s3/esp32s3_ble.c
+cp "$F" "$F.bak"
+# 在 esp32s3_ble_recv_cb() 的 switch (data[0]) 之前插入：
+#   syslog(LOG_INFO, "BTSH-HCI: pkt type=0x%02x len=%u\n", data[0], len);
+# 并在 case H4_ACL: 分支里加一条 syslog(LOG_INFO, "-> ACL to host\n");
+# 记得 #include <syslog.h>
+
+# 2. 构建烧录
+bash scripts/build/build-n16r8.sh gattdebug
+
+# 3. 连板子，观察串口
+#    预期：大量 type=0x04，type=0x02 应为 0
+```
+
+> 原始日志：[`tests/hardware/serial-vhci-debug.log`](../../tests/hardware/serial-vhci-debug.log)
+
+### 剩下的疑点（下一轮从这里继续）
+
+问题收敛到控制器侧后，可疑方向变为：
+
+#### ~~假设 A：控制器 HCI 传输参数不对~~ ❌ 已排除
+
+**已核实**（读 `esp-hal-3rdparty/nuttx/esp32s3/include/sdkconfig.h`）：
+
+```
+#define CONFIG_BT_CTRL_HCI_MODE_VHCI 1     ← ★ HCI 模式 = VHCI，正确
+#define CONFIG_BT_CTRL_HCI_TL        1
+#define CONFIG_BT_CTRL_HCI_TL_EFF    1     ← hci_tl_type = 1 = VHCI
+#define CONFIG_BT_CTRL_BLE_MAX_ACT_EFF 6
+#define CONFIG_BT_CTRL_BLE_STATIC_ACL_TX_BUF_NB 0
+```
+
+`esp32s3_bt_controller_init()` 只覆盖 4 个字段
+（`controller_task_stack_size` / `controller_task_prio` /
+`controller_task_run_cpu` / `magic`），其余走
+`BT_CONTROLLER_INIT_CONFIG_DEFAULT()`，而该宏展开后 `hci_tl_type`
+取自 `CONFIG_BT_CTRL_HCI_TL_EFF` = **1（VHCI）**。
+
+> 📌 附带发现：`components/bt/include/` 下**没有 `esp32s3` 目录**，
+> 构建实际使用的是 **`esp32c3` 那套 `esp_bt.h`**（编译日志可证）。
+> 这是 esp-hal 的组织方式，不一定是 bug，但值得注意。
+
+#### ~~假设 B：低功耗 / sleep 模式导致 ACL 不转发~~ ❌ 已排除
+
+**已核实**：`CONFIG_BT_CTRL_SLEEP_MODE_EFF = 0`
+（即 `ESP_BT_SLEEP_MODE_NONE`，睡眠已禁用），
+`CONFIG_BT_CTRL_SLEEP_CLOCK_EFF = 0`。
+因此 `btdm_low_power_mode_init()` 不会启用低功耗路径。
+
+#### 假设 C：NuttX 的 VHCI 传输层遗漏了某个必需步骤
+
+对照 ESP-IDF 的 `hci_driver_standard.c`
+（`esp-hal-3rdparty/components/bt/porting/transport/driver/vhci/`）
+看它除了 `esp_vhci_host_register_callback()` 之外还做了什么。
+
+#### 假设 D：控制器固件（lib_esp32c3_family）与该 CONFIG 组合有 bug
+
+注意：`sdkconfig.h` 里的 `CONFIG_BT_CTRL_*` 参数来自 esp-hal 的**静态**头文件，
+未必与 NuttX 的实际使用方式匹配。可尝试改几个
+`CONFIG_BT_CTRL_*` 值（如 `CONFIG_BT_CTRL_HCI_TL_EFF`）看是否有变化。
+
+#### 假设 E（值得先试，成本最低）：换一个中央设备
+
+控制器对**不同中央设备**的行为可能不同（连接参数、隐私地址、
+是否立即发起 ATT MTU 交换）。
+
+**验证**：用 **Android + nRF Connect** 连一次，观察 `BTSH-HCI` 是否出现
+`type=0x02`。若 Android 能触发 ACL，则是 Windows 特有的协商差异。
+
+---
+
+## 5. 待验证的假设（**原始假设已部分排除，见上**）
+
+> 📌 §4.5 已经把问题**精确锁定到 VHCI 层的 ACL 缺失**，
+> 下面这些原始假设大部分已被 §4 的第 10–14 条排除。
+> 保留在此仅作排查过程记录。
+
+### 假设 1：`bt_gatt_connected()` 之后缺少必要的 ATT 初始化
+
+**已排除** —— 见 §4 第 10 条。它的实现只有一句
+`bt_gatt_foreach_attr(0x0001, 0xffff, connected_cb, conn)`，
+只处理 CCC 订阅状态，ATT 服务端无需连接后初始化。
 
 ### 假设 2：入站 ATT 请求根本没到达 host
 
