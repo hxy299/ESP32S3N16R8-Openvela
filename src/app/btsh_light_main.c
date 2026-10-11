@@ -496,11 +496,31 @@ static int btsh_light_start(void)
   g_adv_data[1].type    = 0;
 
   /* 扫描响应里放完整设备名 */
+  /*
+   * ★ Complete Local Name 必须**带字符串终止符**。
+   *
+   * 两次踩坑记录（2026-10-11）：
+   *
+   * 坑 1（声明长度与数据不符）：
+   *     .len   = 1 + strlen(NAME);          // 11
+   *     memcpy(data, NAME, strlen(NAME));   // 只拷 10，长度字段多 1
+   *
+   * 坑 2（去掉终止符 —— 也不对）：
+   *     .len   = strlen(NAME);              // 10
+   *     memcpy(data, NAME, strlen(NAME));   // 10
+   *   实测结果是中心设备只解析到 "BTSH-LIGH"（少了最后一个字符）——
+   *   因为 BT_EIR_NAME_COMPLETE 要求名字以 '\0' 结束，
+   *   长度字段应**包含**该终止符。
+   *
+   * 正确写法（与 btsak 一致）：
+   *     .len = strlen(NAME) + 1;                        // 含 '\0'
+   *     memcpy(data, NAME, strlen(NAME) + 1);           // 连 '\0' 一起拷
+   */
 
-  g_scan_rsp[0].len  = 1 + strlen(CONFIG_BTSH_LIGHT_ADV_NAME);
+  g_scan_rsp[0].len  = strlen(CONFIG_BTSH_LIGHT_ADV_NAME) + 1;
   g_scan_rsp[0].type = BT_EIR_NAME_COMPLETE;
   memcpy(g_scan_rsp[0].data, CONFIG_BTSH_LIGHT_ADV_NAME,
-         strlen(CONFIG_BTSH_LIGHT_ADV_NAME));
+         strlen(CONFIG_BTSH_LIGHT_ADV_NAME) + 1);
   g_scan_rsp[1].len  = 0;
   g_scan_rsp[1].type = 0;
 
