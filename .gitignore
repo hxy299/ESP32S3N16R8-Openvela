@@ -71,6 +71,8 @@ partition_table/
 !assets/firmware/**
 !assets/firmware/*.bin
 !assets/firmware/*.map
+# 显式排除 ELF（上面的 ssets/firmware/** 会把它带进来）
+assets/firmware/*.elf
 
 # ---- Python ----
 __pycache__/
