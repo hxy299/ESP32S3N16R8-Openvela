@@ -197,11 +197,26 @@ bash scripts/build/build-n16r8.sh gattdebug
 `CONFIG_BT_CTRL_SLEEP_CLOCK_EFF = 0`。
 因此 `btdm_low_power_mode_init()` 不会启用低功耗路径。
 
-#### 假设 C：NuttX 的 VHCI 传输层遗漏了某个必需步骤
+#### ~~假设 C：NuttX 的 VHCI 传输层遗漏了必需步骤~~ ❌ 已排除
 
-对照 ESP-IDF 的 `hci_driver_standard.c`
-（`esp-hal-3rdparty/components/bt/porting/transport/driver/vhci/`）
-看它除了 `esp_vhci_host_register_callback()` 之外还做了什么。
+**已读 `hci_driver_standard.c` 全文并核对整条链路**：
+
+```
+hci_transport_acl_to_host()          hci_transport.c:92
+  → hci_driver_vhci_controller_tx()  hci_driver_standard.c:29
+      buf[0] = HCI_DRIVER_TYPE_ACL   （加 H4 头）
+  → forward_cb(..., C2H)             hci_driver_standard.c:48
+  → hci_transport_host_recv_cb()     hci_transport.c:38
+  → hci_driver_vhci_host_recv_cb()   hci_driver_standard.c:111
+  → host_recv_cb->notify_host_recv() hci_driver_standard.c:117
+  → esp32s3_ble_recv_cb()            esp32s3_ble.c:133
+  → bt_netdev_receive() = bt_receive() bt_driver.h:49
+  → hci_rx_work → hci_acl()          bt_hcicore.c:1087/235
+```
+
+**关键结论**：`hci_driver_vhci_host_recv_cb()`（第 117 行）
+**无条件转发所有类型** —— 对 ACL 和 EVT 一视同仁，**没有任何过滤**。
+传输层是干净的。
 
 #### 假设 D：控制器固件（lib_esp32c3_family）与该 CONFIG 组合有 bug
 
@@ -209,13 +224,119 @@ bash scripts/build/build-n16r8.sh gattdebug
 未必与 NuttX 的实际使用方式匹配。可尝试改几个
 `CONFIG_BT_CTRL_*` 值（如 `CONFIG_BT_CTRL_HCI_TL_EFF`）看是否有变化。
 
-#### 假设 E（值得先试，成本最低）：换一个中央设备
+#### ~~假设 E：换一个中央设备~~ ❌ 已完成，不是特例
 
-控制器对**不同中央设备**的行为可能不同（连接参数、隐私地址、
-是否立即发起 ATT MTU 交换）。
+**已用 Android + nRF Connect 实测**（3 次连接）：
 
-**验证**：用 **Android + nRF Connect** 连一次，观察 `BTSH-HCI` 是否出现
-`type=0x02`。若 Android 能触发 ACL，则是 Windows 特有的协商差异。
+| 中央设备 | 地址类型 | `le_conn_complete` | `bt_gatt_connected` | 复位 | ACL |
+| --- | --- | --- | --- | --- | --- |
+| Windows (bleak) | `(public)` | ✅ | ✅ | 0 | 0 |
+| **Android (nRF Connect)** | `(random)` | ✅ | ✅ | 0 | 0 |
+
+**两个平台行为完全一致** → 与中央设备无关。
+
+#### ★ 下一步（方向 F）：用 ESP-IDF 验证同一块板 —— ✅ **已完成，结论明确**
+
+**这是判断「硬件/控制器」与「NuttX host 栈」的分水岭。**
+
+### 🎯 决定性对照实验（2026-10-11 完成）
+
+**同一块板、同一根 USB 线、同一个 USB 口、同一套供电**，只换固件：
+
+| 检查项 | **ESP-IDF v5.3.1 + NimBLE** | **openvela / NuttX** |
+| --- | --- | --- |
+| BLE 控制器初始化 | ✅ `BLE_INIT: BT controller compile version [aa16a46]` | ✅ `compile version [0738a61]` |
+| 蓝牙 MAC | `e0:72:a1:f2:8f:ea` | `e0:72:a1:f2:8f:ea`（**同一地址**） |
+| PSRAM | ✅ `Found 8MB PSRAM`, `SPI SRAM memory test OK` | ✅ 8MB |
+| 广播 | ✅ | ✅ |
+| 被中央设备扫描到 | ✅ `nimble-bleprph`，RSSI **-18** | ✅ `BTSH-LIGHT`，RSSI -20 |
+| 建立 BLE 连接 | ✅ | ✅ `le_conn_complete: status 0` |
+| **GATT 服务发现** | **✅✅ 拿到 4 个服务** | **❌ 超时** |
+
+**ESP-IDF 下完整枚举出所有服务与特征：**
+
+```
+Service 00001800-...  (Generic Access Profile)
+    Char 00002a00  [read]      Char 00002a01  [read]
+Service 00001801-...  (Generic Attribute Profile)
+    Char 00002a05  [indicate]  Char 00002b3a  [read]  Char 00002b29  [read,write]
+Service 00001811-...  (Alert Notification Service)
+    Char 00002a47  [read]      Char 00002a46  [notify]
+    Char 00002a48  [read]      Char 00002a45  [notify]  Char 00002a44  [write]
+Service 59462f12-9543-9999-12c8-58b459a2712d  (Unknown，示例自定义服务)
+    Char 33333333-2222-2222-1111-111100000000  [read,write,notify,indicate]
+```
+
+### ★★ 结论
+
+> **硬件与 ESP32-S3 控制器本身完全正常。**
+> **问题确定在 openvela / NuttX 的 BLE host 栈（或其与 ESP32 控制器的整合层）。**
+
+**佐证**：NuttX 与 ESP-IDF 使用的是**不同的控制器固件版本**
+（NuttX 链接 `0738a61`，ESP-IDF 链接 `aa16a46`），
+但**蓝牙 MAC 完全相同**，说明是同一颗芯片、同一套控制器硬件。
+
+### 为什么 NuttX 侧会失败（现有证据支持的判断）
+
+1. **ACL 数据从未到达主机** —— 在 VHCI 回调入口插桩实测：
+   连接全程只有 `H4_EVT`，`H4_ACL` **恒为 0**。
+2. **整条软件链路已逐段排除**（见上表，共 21 项）——
+   从 HCI 初始化、流控配置、传输层映射到 ATT/GATT 层代码，全都没问题。
+3. **`CONFIG_ESPRESSIF_BLE` 的 Kconfig 桥接缺口**（见
+   [`HANDOFF-AI-ONBOARDING.md`](HANDOFF-AI-ONBOARDING.md) §5.3）——
+   该选项**只在 RISC-V 侧存在**（`arch/risc-v/src/common/espressif/Kconfig:505`），
+   Xtensa(ESP32-S3) 侧完全没有，本项目只能靠 `-DCONFIG_ESPRESSIF_BLE=1` 绕过编译。
+
+   > 📌 **这强烈暗示：openvela 当前树里 ESP32-S3 的 BLE 支持本身就不完整。**
+   > ESP32-C3（RISC-V）有完整的 `ESPRESSIF_BLE` Kconfig 与 `Make.defs` 接线，
+   > 而 ESP32-S3 侧缺失 —— 二者很可能不是同等程度的支持。
+
+### 建议的后续方向（按可行性排序）
+
+| # | 方向 | 说明 |
+| --- | --- | --- |
+| **1** | **在 ESP32-C3 上验证同一套 NuttX BLE 代码** | 该芯片 `ESPRESSIF_BLE` Kconfig 完整。若 C3 正常而 S3 异常，即可确认是 **ESP32-S3 特有缺口**，并可直接对比两边的初始化差异 |
+| **2** | **对比 NuttX 与 ESP-IDF 的控制器初始化序列** | ESP-IDF 能用同一控制器正常工作，其 `esp_bt_controller_init` 的参数与调用顺序可与 NuttX 的 `esp32s3_bt_controller_init()` 逐项对比，找出 NuttX 少做或做错的地方 |
+| 3 | 改用 ESP-IDF 的 NimBLE 作为 NuttX 的 host | 工程量大，但 ESP-IDF 已证明可用；NuttX 里有 `apps/wireless/bluetooth/nimble` 的痕迹可查 |
+| 4 | 向 openvela 上游反馈 | 附本文的证据链（ESP-IDF 可用 / NuttX 不可用的完整对照） |
+
+### 复现本对照实验的方法
+
+```bash
+# ---- ESP-IDF 侧 ----
+# 已装在 ~/esp-idf (v5.3.1)，工具链在 ~/.espressif
+. ~/esp-idf/export.sh
+cd ~/esp-ble-test          # bleprph 示例（NimBLE peripheral GATT server）
+idf.py build
+
+# Windows 侧烧录（三个文件，注意偏移）
+python -m esptool --chip esp32s3 -p COM4 -b 921600 \
+  --before default_reset --after hard_reset \
+  write_flash --flash_mode dio --flash_freq 80m --flash_size 16MB \
+  0x0     bootloader.bin \
+  0x8000  partition-table.bin \
+  0x10000 bleprph.bin
+
+# 广播名为 nimble-bleprph（NimBLE 的默认名，不是 sdkconfig 里设的那个）
+# 用 Windows/Python bleak 连接并 get_services() -> 成功列出 4 个服务
+
+# ---- NuttX 侧 ----
+python -m esptool --chip esp32s3 -p COM4 -b 921600 \
+  --before default_reset --after hard_reset \
+  write_flash 0x0 nuttx-n16r8-gattlight.bin
+# 板上执行 btsh_light start，再连接 -> get_services() 超时
+```
+
+**关键产物**：
+- [`serial-espidf-bleprph-boot.log`](../../tests/hardware/serial-espidf-bleprph-boot.log)
+  —— ESP-IDF 启动与 BLE 初始化日志（含控制器版本、PSRAM 自检）
+
+#### ~~原始假设 C/D/E~~（多数已被 §4 排除，保留作排查记录）
+
+> 📌 补充排除项（本轮新增）：
+> **低功耗唤醒路径不影响 ACL** —— `esp32s3_ble_adapter.c:2784`
+> 的 `async_wakeup_request()` 在 `g_lp_cntl.enable == 0` 时
+> **直接返回 false**，而 `CONFIG_BT_CTRL_SLEEP_MODE_EFF=0` 保证该值为 0。
 
 ---
 

@@ -1,0 +1,419 @@
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x8 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:2
+load:0x3fc96280,len:0x2ccc
+load:0x40374000,len:0xac9c
+SHA-256 comparison failed:
+Calculated: 66b3584296c47abc3a99fc342c1156f37a03362cf97690dc195e5559bf14e88d
+Expected: 0000000050260000000000000000000000000000000000000000000000000000
+Attempting to boot anyway...
+entry 0x40374f9c
+*** Booting NuttX ***
+dram: lma 0x00000020 vma 0x3fc96280 len 0x2ccc   (11468)
+iram: lma 0x00002cf4 vma 0x40374000 len 0xac9c   (44188)
+padd: lma 0x0000d9a8 vma 0x00000000 len 0x2650   (9808)
+imap: lma 0x00010000 vma 0x42030000 len 0x464c0  (287936)
+padd: lma 0x000564c8 vma 0x00000000 len 0x9b30   (39728)
+dmap: lma 0x00060000 vma 0x3c010000 len 0xaee0   (44768)
+total segments stored 6
+ABesp32s3_bt_controller_init: BT controller compile version [0738a61]
+interrupt_alloc_wrapper: cpu_id=0 , source=8 , handler=0x40378e4c, arg=0, ret_handle=0x3fc95368
+esp_phy_get_init_data: Loading PHY init data from application binary
+bt_initialize: btdev 0x3fc97400
+bt_hci_cmd_create: opcode 0c03 param_len 0
+bt_buf_alloc: buf 0x3fc952ac type 0 reserve 1
+bt_hci_cmd_create: buf 0x3fc952ac
+bt_buf_extend: buf 0x3fc952ac len 3
+bt_hci_cmd_send_sync: opcode 0c03 len 3
+hci_tx_kthread: started
+bt_buf_addref: buf 0x3fc952ac (old) ref 1 type 0
+hci_tx_kthread: Sending command 0c03 buf 0x3fc952ac to driver
+BTSH-HCI: type=0x04 len=7
+bt_receive: data 0x3fca16ab len 6
+bt_buf_alloc: buf 0x3fc95294 type 1 reserve 1
+bt_buf_extend: buf 0x3fc95294 len 6
+bt_buf_release: buf 0x3fc952ac ref 2 type 0
+bt_buf_release: Remaining references: 1
+priority_rx_work: list 0x3fc94cb0
+priority_rx_work: buf 0x3fc95294 type 1 len 6
+bt_buf_consume: buf 0x3fc95294 len 2
+hci_cmd_complete: opcode 0c03
+bt_buf_consume: buf 0x3fc95294 len 3
+hci_reset_complete: status 0
+bt_buf_addref: buf 0x3fc95294 (old) ref 1 type 1
+bt_buf_release: buf 0x3fc952ac ref 1 type 0
+bt_buf_release: Buffer freed: 0x3fc952ac
+bt_buf_release: buf 0x3fc95294 ref 2 type 1
+bt_buf_release: Remaining references: 1
+bt_buf_release: buf 0x3fc95294 ref 1 type 1
+bt_buf_release: Buffer freed: 0x3fc95294
+bt_hci_cmd_create: opcode 1003 param_len 0
+bt_buf_alloc: buf 0x3fc95294 type 0 reserve 1
+bt_hci_cmd_create: buf 0x3fc95294
+bt_buf_extend: buf 0x3fc95294 len 3
+bt_hci_cmd_send_sync: opcode 1003 len 3
+bt_buf_addref: buf 0x3fc95294 (old) ref 1 type 0
+hci_tx_kthread: Sending command 1003 buf 0x3fc95294 to driver
+BTSH-HCI: type=0x04 len=15
+bt_receive: data 0x3fca16a3 len 14
+bt_buf_alloc: buf 0x3fc952ac type 1 reserve 1
+bt_buf_extend: buf 0x3fc952ac len 14
+bt_buf_release: buf 0x3fc95294 ref 2 type 0
+bt_buf_release: Remaining references: 1priority_rx_work: list 0x3fc94cb0
+priority_rx_work: buf 0x3fc952ac type 1 len 14
+bt_buf_consume: buf 0x3fc952ac len 2
+hci_cmd_complete: opcode 1003
+bt_buf_consume: buf 0x3fc952ac len 3
+hci_cmd_complete: Unhandled opcode 1003
+bt_buf_addref: buf 0x3fc952ac (old) ref 1 type 1
+bt_buf_release: buf 0x3fc95294 ref 1 type 0
+bt_buf_release: Buffer freed: 0x3fc95294
+bt_buf_release: buf 0x3fc952ac ref 2 type 1
+bt_buf_release: Remaining references: 1
+
+read_local_features_complete: status 0
+bt_buf_release: buf 0x3fc952ac ref 1 type 1
+bt_buf_release: Buffer freed: 0x3fc952ac
+bt_hci_cmd_create: opcode 1001 param_len 0
+bt_buf_alloc: buf 0x3fc952ac type 0 reserve 1
+bt_hci_cmd_create: buf 0x3fc952ac
+bt_buf_extend: buf 0x3fc952ac len 3
+bt_hci_cmd_send_sync: opcode 1001 len 3
+bt_buf_addref: buf 0x3fc952ac (old) ref 1 type 0
+hci_tx_kthread: Sending command 1001 buf 0x3fc952ac to driver
+BTSH-HCI: type=0x04 len=15
+bt_receive: data 0x3fca16a3 len 14
+bt_buf_alloc: buf 0x3fc95294 type 1 reserve 1
+bt_buf_extend: buf 0x3fc95294 len 14
+bt_buf_release: buf 0x3fc952ac ref 2 type 0
+bt_buf_release: Remaining references: 1priority_rx_work: list 0x3fc94cb0
+priority_rx_work: buf 0x3fc95294 type 1 len 14
+bt_buf_consume: buf 0x3fc95294 len 2
+hci_cmd_complete: opcode 1001
+bt_buf_consume: buf 0x3fc95294 len 3
+hci_cmd_complete: Unhandled opcode 1001
+bt_buf_addref: buf 0x3fc95294 (old) ref 1 type 1
+bt_buf_release: buf 0x3fc952ac ref 1 type 0
+bt_buf_release: Buffer freed: 0x3fc952ac
+bt_buf_release: buf 0x3fc95294 ref 2 type 1
+bt_buf_release: Remaining references: 1
+
+read_local_ver_complete: status 0
+bt_buf_release: buf 0x3fc95294 ref 1 type 1
+bt_buf_release: Buffer freed: 0x3fc95294
+bt_hci_cmd_create: opcode 1009 param_len 0
+bt_buf_alloc: buf 0x3fc95294 type 0 reserve 1
+bt_hci_cmd_create: buf 0x3fc95294
+bt_buf_extend: buf 0x3fc95294 len 3
+bt_hci_cmd_send_sync: opcode 1009 len 3
+bt_buf_addref: buf 0x3fc95294 (old) ref 1 type 0
+hci_tx_kthread: Sending command 1009 buf 0x3fc95294 to driver
+BTSH-HCI: type=0x04 len=13
+bt_receive: data 0x3fca16a7 len 12
+bt_buf_alloc: buf 0x3fc952ac type 1 reserve 1
+bt_buf_extend: buf 0x3fc952ac len 12
+bt_buf_release: buf 0x3fc95294 ref 2 type 0
+bt_buf_release: Remaining references: 1
+priority_rx_work: list 0x3fc94cb0
+priority_rx_work: buf 0x3fc952ac type 1 len 12
+bt_buf_consume: buf 0x3fc952ac len 2
+hci_cmd_complete: opcode 1009
+bt_buf_consume: buf 0x3fc952ac len 3
+hci_cmd_complete: Unhandled opcode 1009
+bt_buf_addref: buf 0x3fc952ac (old) ref 1 type 1
+bt_buf_release: buf 0x3fc95294 ref 1 type 0
+bt_buf_release: Buffer freed: 0x3fc95294
+bt_buf_release: buf 0x3fc952ac ref 2 type 1
+bt_buf_release: Remaining references: 1
+read_bdaddr_complete: status 0
+bt_buf_release: buf 0x3fc952ac ref 1 type 1
+bt_buf_release: Buffer freed: 0x3fc952ac
+bt_hci_cmd_create: opcode 2003 param_len 0
+bt_buf_alloc: buf 0x3fc952ac type 0 reserve 1
+bt_hci_cmd_create: buf 0x3fc952ac
+bt_buf_extend: buf 0x3fc952ac len 3
+bt_hci_cmd_send_sync: opcode 2003 len 3
+bt_buf_addref: buf 0x3fc952ac (old) ref 1 type 0
+hci_tx_kthread: Sending command 2003 buf 0x3fc952ac to driver
+BTSH-HCI: type=0x04 len=15
+bt_receive: data 0x3fca16a3 len 14
+bt_buf_alloc: buf 0x3fc95294 type 1 reserve 1
+bt_buf_extend: buf 0x3fc95294 len 14
+priority_rx_work: list 0x3fc94cb0
+priority_rx_work: buf 0x3fc95294 type 1 len 14
+bt_buf_consume: buf 0x3fc95294 len 2
+hci_cmd_complete: opcode 2003
+bt_buf_consume: buf 0x3fc95294 len 3
+hci_cmd_complete: Unhandled opcode 2003
+bt_buf_addref: buf 0x3fc95294 (old) ref 1 type 1
+bt_buf_release: buf 0x3fc952ac ref 2 type 0
+bt_buf_release: Remaining references: 1
+bt_buf_release: buf 0x3fc95294 ref 2 type 1
+bt_buf_release: Remaining references: 1
+bt_buf_release: buf 0x3fc952ac ref 2 type 0
+bt_buf_release: Buffer freed: 0x3fc952ac
+read_le_features_complete: status 0
+bt_buf_release: buf 0x3fc95294 ref 1 type 1
+bt_buf_release: Buffer freed: 0x3fc95294
+bt_hci_cmd_create: opcode 2002 param_len 0
+bt_buf_alloc: buf 0x3fc95294 type 0 reserve 1
+bt_hci_cmd_create: buf 0x3fc95294
+bt_buf_extend: buf 0x3fc95294 len 3
+bt_hci_cmd_send_sync: opcode 2002 len 3
+bt_buf_addref: buf 0x3fc95294 (old) ref 1 type 0
+hci_tx_kthread: Sending command 2002 buf 0x3fc95294 to driver
+BTSH-HCI: type=0x04 len=10
+bt_receive: data 0x3fca16a7 len 9
+bt_buf_alloc: buf 0x3fc952ac type 1 reserve 1
+bt_buf_extend: buf 0x3fc952ac len 9
+bt_buf_release: buf 0x3fc95294 ref 2 type 0priority_rx_work: list 0x3fc94cb0
+priority_rx_work: buf 0x3fc952ac type 1 len 9
+bt_buf_consume: buf 0x3fc952ac len 2
+hci_cmd_complete: opcode 2002
+bt_buf_consume: buf 0x3fc952ac len 3
+hci_cmd_complete: Unhandled opcode 2002
+bt_buf_addref: buf 0x3fc952ac (old) ref 1 type 1
+bt_buf_release: buf 0x3fc95294 ref 2 type 0
+bt_buf_release: Remaining references: 1
+bt_buf_release: buf 0x3fc952ac ref 2 type 1
+bt_buf_release: Remaining references: 1
+
+bt_buf_release: Buffer freed: 0x3fc95294
+le_read_buffer_size_complete: status 0
+bt_buf_release: buf 0x3fc952ac ref 1 type 1
+bt_buf_release: Buffer freed: 0x3fc952ac
+bt_hci_cmd_create: opcode 0c01 param_len 8
+bt_buf_alloc: buf 0x3fc952ac type 0 reserve 1
+bt_hci_cmd_create: buf 0x3fc952ac
+bt_buf_extend: buf 0x3fc952ac len 3
+bt_buf_extend: buf 0x3fc952ac len 8
+bt_hci_cmd_send_sync: opcode 0c01 len 11
+bt_buf_addref: buf 0x3fc952ac (old) ref 1 type 0
+hci_tx_kthread: Sending command 0c01 buf 0x3fc952ac to driver
+BTSH-HCI: type=0x04 len=7
+bt_receive: data 0x3fca16a3 len 6
+bt_buf_alloc: buf 0x3fc95294 type 1 reserve 1
+bt_buf_extend: buf 0x3fc95294 len 6
+bt_buf_release: buf 0x3fc952ac ref 2 type 0priority_rx_work: list 0x3fc94cb0
+priority_rx_work: buf 0x3fc95294 type 1 len 6
+bt_buf_consume: buf 0x3fc95294 len 2
+hci_cmd_complete: opcode 0c01
+bt_buf_consume: buf 0x3fc95294 len 3
+hci_cmd_complete: Unhandled opcode 0c01
+bt_buf_addref: buf 0x3fc95294 (old) ref 1 type 1
+bt_buf_release: buf 0x3fc952ac ref 2 type 0
+bt_buf_release: Remaining references: 1
+bt_buf_release: buf 0x3fc95294 ref 2 type 1
+bt_buf_release: Remaining references: 1
+
+bt_buf_release: Buffer freed: 0x3fc952ac
+bt_buf_release: buf 0x3fc95294 ref 1 type 1
+bt_buf_release: Buffer freed: 0x3fc95294
+bt_hci_cmd_create: opcode 2001 param_len 8
+bt_buf_alloc: buf 0x3fc95294 type 0 reserve 1
+bt_hci_cmd_create: buf 0x3fc95294
+bt_buf_extend: buf 0x3fc95294 len 3
+bt_buf_extend: buf 0x3fc95294 len 8
+bt_hci_cmd_send_sync: opcode 2001 len 11
+bt_buf_addref: buf 0x3fc95294 (old) ref 1 type 0
+hci_tx_kthread: Sending command 2001 buf 0x3fc95294 to driver
+BTSH-HCI: type=0x04 len=7
+bt_receive: data 0x3fca16a3 len 6
+bt_buf_alloc: buf 0x3fc952ac type 1 reserve 1
+bt_buf_extend: buf 0x3fc952ac len 6
+bt_buf_release: buf 0x3fc95294 ref 2 type 0priority_rx_work: list 0x3fc94cb0
+priority_rx_work: buf 0x3fc952ac type 1 len 6
+bt_buf_consume: buf 0x3fc952ac len 2
+hci_cmd_complete: opcode 2001
+bt_buf_consume: buf 0x3fc952ac len 3
+hci_cmd_complete: Unhandled opcode 2001
+bt_buf_addref: buf 0x3fc952ac (old) ref 1 type 1
+bt_buf_release: buf 0x3fc95294 ref 2 type 0
+bt_buf_release: Remaining references: 1
+bt_buf_release: buf 0x3fc952ac ref 2 type 1
+bt_buf_release: Remaining references: 1
+
+bt_buf_release: Buffer freed: 0x3fc95294
+bt_buf_release: buf 0x3fc952ac ref 1 type 1
+bt_buf_release: Buffer freed: 0x3fc952ac
+bt_hci_cmd_create: opcode 0c33 param_len 7
+bt_buf_alloc: buf 0x3fc952ac type 0 reserve 1
+bt_hci_cmd_create: buf 0x3fc952ac
+bt_buf_extend: buf 0x3fc952ac len 3
+bt_buf_extend: buf 0x3fc952ac len 7
+bt_hci_cmd_send: opcode 0c33 len 10
+bt_hci_cmd_create: opcode 0c31 param_len 1
+bt_buf_alloc: buf 0x3fc95294 type 0 reserve 1
+bt_hci_cmd_create: buf 0x3fc95294
+bt_buf_extend: buf 0x3fc95294 len 3
+bt_buf_extend: buf 0x3fc95294 len 1
+bt_hci_cmd_send_sync: opcode 0c31 len 4
+bt_buf_addref: buf 0x3fc952ac (old) ref 1 type 0
+hci_tx_kthread: Sending command 0c33 buf 0x3fc952ac to driver
+BTSH-HCI: type=0x04 len=7
+bt_receive: data 0x3fca16a3 len 6
+bt_buf_alloc: buf 0x3fc9527c type 1 reserve 1
+bt_buf_extend: buf 0x3fc9527c len 6
+bt_buf_release: buf 0x3fc952ac ref 2 type 0
+bt_buf_release: Remaining references: 1priority_rx_work: list 0x3fc94cb0
+priority_rx_work: buf 0x3fc9527c type 1 len 6
+bt_buf_consume: buf 0x3fc9527c len 2
+hci_cmd_complete: opcode 0c33
+bt_buf_consume: buf 0x3fc9527c len 3
+hci_cmd_complete: Unhandled opcode 0c33
+bt_buf_release: buf 0x3fc952ac ref 1 type 0
+bt_buf_release: Buffer freed: 0x3fc952ac
+bt_buf_release: buf 0x3fc9527c ref 1 type 1
+bt_buf_release: Buffer freed: 0x3fc9527c
+
+bt_buf_addref: buf 0x3fc95294 (old) ref 1 type 0
+hci_tx_kthread: Sending command 0c31 buf 0x3fc95294 to driver
+BTSH-HCI: type=0x04 len=7
+bt_receive: data 0x3fca16a7 len 6
+bt_buf_alloc: buf 0x3fc9527c type 1 reserve 1
+bt_buf_extend: buf 0x3fc9527c len 6
+bt_buf_release: buf 0x3fc95294 ref 2 type 0
+bt_buf_release: Remaining references: 1
+priority_rx_work: list 0x3fc94cb0
+priority_rx_work: buf 0x3fc9527c type 1 len 6
+bt_buf_consume: buf 0x3fc9527c len 2
+hci_cmd_complete: opcode 0c31
+bt_buf_consume: buf 0x3fc9527c len 3
+hci_cmd_complete: Unhandled opcode 0c31
+bt_buf_addref: buf 0x3fc9527c (old) ref 1 type 1
+bt_buf_release: buf 0x3fc95294 ref 1 type 0
+bt_buf_release: Buffer freed: 0x3fc95294
+bt_buf_release: buf 0x3fc9527c ref 2 type 1
+bt_buf_release: Remaining references: 1
+bt_buf_release: buf 0x3fc9527c ref 1 type 1
+bt_buf_release: Buffer freed: 0x3fc9527c
+hci_initialize: HCI ver 9 rev 22, manufacturer 741
+hci_initialize: ACL buffers: pkts 12 mtu 251
+bt_l2cap_chan_register: CID 0x0004
+bt_l2cap_chan_register: CID 0x0006
+bt_l2cap_chan_register: CID 0x0005
+bt_hci_cmd_create: opcode 2008 param_len 32
+bt_buf_alloc: buf 0x3fc9527c type 0 reserve 1
+bt_hci_cmd_create: buf 0x3fc9527c
+bt_buf_extend: buf 0x3fc9527c len 3
+bt_buf_extend: buf 0x3fc9527c len 32
+bt_hci_cmd_send: opcode 2008 len 35
+bt_hci_cmd_create: opcode 2009 param_len 32
+bt_buf_alloc: buf 0x3fc95294 type 0 reserve 1
+bt_hci_cmd_create: buf 0x3fc95294
+bt_buf_extend: buf 0x3fc95294 len 3
+bt_buf_extend: buf 0x3fc95294 len 32
+bt_hci_cmd_send: opcode 2009 len 35
+bt_hci_cmd_create: opcode 2006 param_len 15
+bt_buf_alloc: buf 0x3fc952ac type 0 reserve 1
+bt_hci_cmd_create: buf 0x3fc952ac
+bt_buf_extend: buf 0x3fc952ac len 3
+bt_buf_extend: buf 0x3fc952ac len 15
+bt_hci_cmd_send: opcode 2006 len 18
+bt_hci_cmd_create: opcode 200a param_len 1
+bt_buf_alloc: buf 0x3fc95264 type 0 reserve 1bt_buf_addref: buf 0x3fc9527c (old) ref 1 type 0
+
+bt_hci_cmd_create: buf 0x3fc95264hci_tx_kthread: Sending command 2008 buf 0x3fc9527c to driver
+
+bt_buf_extend: buf 0x3fc95264 len 3BTSH-HCI: type=0x04 len=7bt_buf_release: buf 0x3fc9527c ref 2 type 0
+
+bt_receive: data 0x3fca165f len 6
+
+bt_buf_extend: buf 0x3fc95264 len 1bt_buf_alloc: buf 0x3fc9524c type 1 reserve 1bt_buf_release: Remaining references: 1
+
+bt_buf_extend: buf 0x3fc9524c len 6
+
+bt_hci_cmd_send_sync: opcode 200a len 4
+priority_rx_work: list 0x3fc94cb0
+priority_rx_work: buf 0x3fc9524c type 1 len 6
+bt_buf_consume: buf 0x3fc9524c len 2
+hci_cmd_complete: opcode 2008
+bt_buf_consume: buf 0x3fc9524c len 3
+hci_cmd_complete: Unhandled opcode 2008
+bt_buf_release: buf 0x3fc9527c ref 1 type 0
+bt_buf_release: Buffer freed: 0x3fc9527c
+bt_buf_release: buf 0x3fc9524c ref 1 type 1
+bt_buf_release: Buffer freed: 0x3fc9524c
+bt_buf_addref: buf 0x3fc95294 (old) ref 1 type 0
+hci_tx_kthread: Sending command 2009 buf 0x3fc95294 to driver
+BTSH-HCI: type=0x04 len=7
+bt_receive: data 0x3fca165f len 6
+bt_buf_alloc: buf 0x3fc9524c type 1 reserve 1
+bt_buf_extend: buf 0x3fc9524c len 6
+bt_buf_release: buf 0x3fc95294 ref 2 type 0
+bt_buf_release: Remaining references: 1priority_rx_work: list 0x3fc94cb0
+priority_rx_work: buf 0x3fc9524c type 1 len 6
+bt_buf_consume: buf 0x3fc9524c len 2
+hci_cmd_complete: opcode 2009
+bt_buf_consume: buf 0x3fc9524c len 3
+hci_cmd_complete: Unhandled opcode 2009
+bt_buf_release: buf 0x3fc95294 ref 1 type 0
+bt_buf_release: Buffer freed: 0x3fc95294
+bt_buf_release: buf 0x3fc9524c ref 1 type 1
+bt_buf_release: Buffer freed: 0x3fc9524c
+
+bt_buf_addref: buf 0x3fc952ac (old) ref 1 type 0
+hci_tx_kthread: Sending command 2006 buf 0x3fc952ac to driver
+BTSH-HCI: type=0x04 len=7
+bt_receive: data 0x3fca165f len 6
+bt_buf_alloc: buf 0x3fc9524c type 1 reserve 1
+bt_buf_extend: buf 0x3fc9524c len 6
+bt_buf_release: buf 0x3fc952ac ref 2 type 0priority_rx_work: list 0x3fc94cb0
+priority_rx_work: buf 0x3fc9524c type 1 len 6
+bt_buf_consume: buf 0x3fc9524c len 2
+hci_cmd_complete: opcode 2006
+bt_buf_consume: buf 0x3fc9524c len 3
+hci_cmd_complete: Unhandled opcode 2006
+bt_buf_release: buf 0x3fc952ac ref 2 type 0
+bt_buf_release: Remaining references: 1
+bt_buf_release: buf 0x3fc9524c ref 1 type 1
+bt_buf_release: Buffer freed: 0x3fc9524c
+
+bt_buf_release: Buffer freed: 0x3fc952ac
+bt_buf_addref: buf 0x3fc95264 (old) ref 1 type 0
+hci_tx_kthread: Sending command 200a buf 0x3fc95264 to driver
+BTSH-HCI: type=0x04 len=7
+bt_receive: data 0x3fca169f len 6
+bt_buf_alloc: buf 0x3fc952ac type 1 reserve 1
+bt_buf_extend: buf 0x3fc952ac len 6
+bt_buf_release: buf 0x3fc95264 ref 2 type 0
+bt_buf_release: Remaining references: 1priority_rx_work: list 0x3fc94cb0
+priority_rx_work: buf 0x3fc952ac type 1 len 6
+bt_buf_consume: buf 0x3fc952ac len 2
+hci_cmd_complete: opcode 200a
+bt_buf_consume: buf 0x3fc952ac len 3
+hci_cmd_complete: Unhandled opcode 200a
+bt_buf_addref: buf 0x3fc952ac (old) ref 1 type 1
+bt_buf_release: buf 0x3fc95264 ref 1 type 0
+bt_buf_release: Buffer freed: 0x3fc95264
+bt_buf_release: buf 0x3fc952ac ref 2 type 1
+bt_buf_release: Remaining references: 1
+
+bt_buf_release: buf 0x3fc952ac ref 1 type 1
+bt_buf_release: Buffer freed: 0x3fc952ac
+
+NuttShell (NSH)
+nsh> [KBTSH-HCI: type=0x04 len=22
+bt_receive: data 0x3fca1606 len 21
+bt_buf_alloc: buf 0x3fc952ac type 1 reserve 1
+bt_buf_extend: buf 0x3fc952ac len 21
+hci_rx_work: list 0x3fc94cbc
+hci_rx_work: buf 0x3fc952ac type 1 len 21
+hci_event: event 62
+bt_buf_consume: buf 0x3fc952ac len 2
+bt_buf_consume: buf 0x3fc952ac len 1
+le_conn_complete: status 0 handle 1 role 1 7C:FA:80:EF:CE:2B (public)
+bt_keys_find_irk: 7C:FA:80:EF:CE:2B (public)
+bt_keys_find_irk: 7C:FA:80:EF:CE:2B (public)
+bt_conn_set_state: disconnected -> connected
+bt_conn_addref: handle 1 ref 2
+bt_conn_addref: handle 1 ref 3
+conn_tx_kthread: Started for handle 1
+conn_tx_kthread: calling nxsem_wait_uninterruptible()
+bt_smp_connected: conn 0x3fc94d58 handle 1
+bt_gatt_connected: conn 0x3fc94d58
+bt_conn_release: handle 1 ref 2
+bt_buf_release: buf 0x3fc952ac ref 1 type 1
+bt_buf_release: Buffer freed: 0x3fc952ac
