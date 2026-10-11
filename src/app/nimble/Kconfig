@@ -1,0 +1,59 @@
+############################################################################
+# apps/wireless/bluetooth/btsh_light_nimble/Kconfig
+#
+# BLE GATT 灯控服务（NimBLE 版）
+# 由 OpenvelaESP-BTSH 项目编写
+#
+# 依赖 CONFIG_NIMBLE（Apache NimBLE host 栈），
+# 与 NuttX 自带 host（CONFIG_WIRELESS_BLUETOOTH_HOST）互斥。
+#
+############################################################################
+
+config BTSH_LIGHT_NIMBLE
+	bool "BTSH BLE light service (NimBLE)"
+	default n
+	depends on NIMBLE
+	---help---
+		BLE GATT 灯控服务（下位机 = Peripheral / GATT Server）。
+
+		为什么需要它：NuttX 自带的 BLE host 栈在 ESP32-S3 上收不到
+		ACL 数据（连接能建立但服务发现必然超时），因此改用 NimBLE。
+		详见项目文档 docs/stages/stage-04-nimble-host.md。
+
+		GATT 服务定义（与原生版保持一致，便于上位机复用）：
+		  128 位 UUID 基址 FF00-1234-5678-9ABC-DEF0123456xx
+		    0xFF00  灯控服务
+		      0xFF01  灯控命令  WRITE          1 字节：0=灭 1=亮
+		      0xFF02  灯状态    READ + NOTIFY  1 字节
+		      0xFF03  设备信息  READ           3 字节
+
+if BTSH_LIGHT_NIMBLE
+
+config BTSH_LIGHT_NIMBLE_PROGNAME
+	string "Program name"
+	default "nimble_light"
+	---help---
+		NSH 中执行的命令名。
+
+config BTSH_LIGHT_NIMBLE_PRIORITY
+	int "Task priority"
+	default 100
+
+config BTSH_LIGHT_NIMBLE_STACKSIZE
+	int "Task stack size"
+	default 4096
+
+config BTSH_LIGHT_NIMBLE_ADV_NAME
+	string "BLE advertising name"
+	default "BTSH-LIGHT"
+	---help---
+		广播时使用的设备名。手机/上位机扫描时看到的就是它。
+
+config BTSH_LIGHT_NIMBLE_LED_DEV
+	string "Status LED device"
+	default "/dev/leds0"
+	---help---
+		用于指示灯状态的本机设备节点。默认是板载 WS2812B。
+		接入继电器后此项不再重要（改为操作 GPIO）。
+
+endif # BTSH_LIGHT_NIMBLE

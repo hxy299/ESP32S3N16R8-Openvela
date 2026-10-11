@@ -1,0 +1,33 @@
+############################################################################
+# apps/wireless/bluetooth/btsh_light_nimble/Make.defs
+#
+# BLE GATT 灯控服务（NimBLE 版）—— OpenvelaESP-BTSH 项目
+#
+# ## ★ 本文件**有意留空**（不把本目录加入 CONFIGURED_APPS）
+#
+# 原因：本目录**不参与编译**。它只是源码母本，真正的编译在
+# NimBLE 官方容器的示例目录里完成：
+#
+#     apps/wireless/bluetooth/nimble/mynewt-nimble/
+#       porting/examples/nuttx/
+#         ├─ main.c      <-- 安装脚本把我们的源码复制到这里
+#         └─ Make.defs   <-- CSRCS = NimBLE 协议栈；MAINSRC = 上面的 main.c
+#
+# 如果这里把本目录加进 `CONFIGURED_APPS`，NuttX 会**也**编一遍
+# `btsh_light_main.c`，于是同一个文件产生两份对象，链接报：
+#
+#     multiple definition of `ble_sm_alg_s1'
+#       ...btsh_light_nimble_1.o   <- 本目录编的
+#       ...nimble_1.o              <- 容器编的
+#
+# 并且本目录没有 `PROGNAME`，注册出来的命令名也不对。
+#
+# ## Kconfig 仍然有效
+#
+# 本目录的 `Kconfig` 由 `apps/wireless/bluetooth/Kconfig` 用绝对路径 source，
+# 因此 `CONFIG_BTSH_LIGHT_NIMBLE*` 各项配置仍然可用
+# （容器的 Make.defs 会读取 `CONFIG_BTSH_LIGHT_NIMBLE_PROGNAME` 等）。
+#
+############################################################################
+
+# 有意留空：本目录不加入 CONFIGURED_APPS

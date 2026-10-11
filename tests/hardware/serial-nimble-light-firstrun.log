@@ -1,0 +1,38 @@
+ESP-ROM:esp32s3-2021þESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x8 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:2
+load:0x3fc99a80,len:0x29fc
+load:0x40374000,len:0xac6c
+SHA-256 comparison failed:
+Calculated: 921c72481824df6d5b83d26ebf718e6f844966919ff92ae0b737db24b2cb2afd
+Expected: 0000000050290000000000000000000000000000000000000000000000000000
+Attempting to boot anyway...
+entry 0x40374f80
+*** Booting NuttX ***
+dram: lma 0x00000020 vma 0x3fc99a80 len 0x29fc   (10748)
+iram: lma 0x00002a24 vma 0x40374000 len 0xac6c   (44140)
+padd: lma 0x0000d6a8 vma 0x00000000 len 0x2950   (10576)
+imap: lma 0x00010000 vma 0x42030000 len 0x4b930  (309552)
+padd: lma 0x0005b938 vma 0x00000000 len 0x46c0   (18112)
+dmap: lma 0x00060000 vma 0x3c010000 len 0x7210   (29200)
+total segments stored 6
+
+NuttShell (NSH)
+nsh> [Knimble_light
+BTSH: starting NimBLE light service...
+BTSH[1] enter start
+BTSH[2] opening LED /dev/leds0
+BTSH[3] open rc=3
+BTSH[4] setting host callbacks
+BTSH[5] nimble_port_init
+BTSH[8] nimble port initialized
+BTSH[9] set name rc=0
+BTSH[10] creating hci thread
+BTSH[11] hci thread created
+BTSH[12] creating host thread
+BTSH[13] host thread created, applying light
+BTSH: light OFF
+BTSH[14] start() returning 0
+BTSH: started. Use 'nimble_light state' to check.
