@@ -1,0 +1,37 @@
+ESP-ROM:esp32s3-20òESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x8 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:2
+load:0x3fcb0640,len:0x44bc
+load:0x40374000,len:0xf380
+SHA-256 comparison failed:
+Calculated: 74c73079f790d47c57e574a65715d8650d21658980986ab41dd095f8600442ef
+Expected: 0000000080c70000000000000000000000000000000000000000000000000000
+Attempting to boot anyway...
+entry 0x40374fc0
+*** Booting NuttX ***
+dram: lma 0x00000020 vma 0x3fcb0640 len 0x44bc   (17596)
+iram: lma 0x000044e4 vma 0x40374000 len 0xf380   (62336)
+padd: lma 0x00013878 vma 0x00000000 len 0xc780   (51072)
+imap: lma 0x00020000 vma 0x42050000 len 0x97a5c  (621148)
+padd: lma 0x000b7a64 vma 0x00000000 len 0x8594   (34196)
+dmap: lma 0x000c0000 vma 0x3c010000 len 0x1c424  (115748)
+total segments stored 6
+BTSH-HCI: type=0x04 len=7
+BTSH-HCI: type=0x04 len=15
+BTSH-HCI: type=0x04 len=15
+BTSH-HCI: type=0x04 len=13
+BTSH-HCI: type=0x04 len=15
+BTSH-HCI: type=0x04 len=10
+BTSH-HCI: type=0x04 len=7
+BTSH-HCI: type=0x04 len=7
+BTSH-HCI: type=0x04 len=7
+BTSH-HCI: type=0x04 len=7
+BTSH-HCI: type=0x04 len=7
+BTSH-HCI: type=0x04 len=7
+BTSH-HCI: type=0x04 len=7
+BTSH-HCI: type=0x04 len=7
+
+NuttShell (NSH)
+nsh> [K

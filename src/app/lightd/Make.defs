@@ -1,0 +1,14 @@
+############################################################################
+# apps/wireless/btsh_lightd/Make.defs
+#
+# 把本应用挂进 NuttX 构建系统。
+#
+# 注意：`apps/wireless/bluetooth/Make.defs` 里有
+#     include $(wildcard $(APPDIR)/wireless/bluetooth/*/Make.defs)
+# 会自动包含本文件。
+#
+############################################################################
+
+ifneq ($(CONFIG_BTSH_LIGHTD),)
+CONFIGURED_APPS += $(APPDIR)/wireless/bluetooth/btsh_lightd
+endif

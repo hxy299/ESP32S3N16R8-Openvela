@@ -1,0 +1,61 @@
+############################################################################
+# apps/wireless/btsh_lightd/Kconfig
+#
+# 远程灯控守护进程（TCP 版）
+# 由 OpenvelaESP-BTSH 项目编写
+#
+# 为什么有这一版：openvela/NuttX 在 ESP32-S3 上的 BLE host 栈无法
+# 正常工作（控制器连接后不送 ACL 数据），因此先用 WiFi/TCP 实现
+# "远程点灯"这一核心目标。详见项目文档。
+#
+############################################################################
+
+config BTSH_LIGHTD
+	bool "BTSH remote light daemon (TCP)"
+	default n
+	depends on NET_TCP
+	---help---
+		远程灯控守护进程：监听 TCP 端口，接受文本命令控制灯。
+
+		协议（每行一条命令，\n 结尾）：
+		  ON / OFF / TOGGLE   控制
+		  STATE               查询状态，回 "STATE 1" 或 "STATE 0"
+		  PING                存活检测，回 "PONG"
+		  HELP                帮助
+		  QUIT                断开
+
+		物理输出默认映射到板载 WS2812B（/dev/leds0）。
+		接继电器后修改 btsh_light_apply() 即可。
+
+if BTSH_LIGHTD
+
+config BTSH_LIGHTD_PROGNAME
+	string "Program name"
+	default "btsh_lightd"
+
+config BTSH_LIGHTD_PRIORITY
+	int "Task priority"
+	default 100
+
+config BTSH_LIGHTD_STACKSIZE
+	int "Task stack size"
+	default 4096
+
+config BTSH_LIGHTD_PORT
+	int "TCP listen port"
+	default 2323
+	---help---
+		监听端口。默认 2323（避免与常见服务冲突）。
+
+config BTSH_LIGHTD_BACKLOG
+	int "Listen backlog"
+	default 4
+
+config BTSH_LIGHTD_LED_DEV
+	string "Status LED device"
+	default "/dev/leds0"
+	---help---
+		用于指示灯状态的本机设备节点。默认是板载 WS2812B。
+		接入继电器后此项不再重要（改为操作 GPIO）。
+
+endif # BTSH_LIGHTD
