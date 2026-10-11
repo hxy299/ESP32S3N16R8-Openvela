@@ -19,13 +19,33 @@
 #
 # ## 用法
 #
-#   bash scripts/build/build-n16r8.sh nsh        # 最小配置（先验证能启动）
-#   bash scripts/build/build-n16r8.sh wifi       # 加 WiFi
-#   bash scripts/build/build-n16r8.sh ble        # 加 BLE
-#   bash scripts/build/build-n16r8.sh blepsram   # BLE + PSRAM
-#   bash scripts/build/build-n16r8.sh full       # BLE + WiFi + PSRAM
+#   bash scripts/build/build-n16r8.sh <配置名> [build.sh 的额外参数...]
 #
-# 额外透传参数：bash scripts/build/build-n16r8.sh nsh menuconfig
+# 当前可用配置（每个都是在前一个基础上叠加，见各自的 defconfig 注释）：
+#
+#   nsh         最小可启动基线                       207,632 B  ✅ 启动到 NSH
+#   psram       + 8MB Octal PSRAM                    207,672 B  ✅ free 显示 8.79MB
+#   ble         + BLE                                421,620 B  ✅ 扫描/广播实测通过
+#   blewifi     + WiFi 与 BLE 共存                    901,212 B  ✅ WiFi 扫到真实路由器
+#   statusled   + 板载 WS2812B 状态灯 (GPIO48)        422,904 B  ✅ 目视确认颜色渐变
+#   gattlight   + 自写 GATT 灯控服务                  423,816 B  ⚠️ 服务注册成功，服务发现待攻克
+#   gattdebug   同上 + 无线内核日志                   437,912 B  ⚠️ 同上（排查用）
+#
+# 额外透传参数示例：
+#   bash scripts/build/build-n16r8.sh gattdebug menuconfig   # 图形化调整
+#   bash scripts/build/build-n16r8.sh gattdebug distclean    # 清理
+#
+# ## 本脚本会自动做的事
+#
+#   1. 把 config/boards/esp32s3-n16r8-generic/defconfig.<名> 与板级 Make.defs
+#      同步到 openvela 的 vendor 配置目录
+#   2. **自动注入必需的编译宏**：读 defconfig，若含 CONFIG_ESP32S3_BLE=y
+#      则加 `-e -DCONFIG_ESPRESSIF_BLE=1`；含 CONFIG_ESP32S3_WIFI=y 则加
+#      `-e -DCONFIG_ESPRESSIF_WIFI=1`
+#      —— 这是**必需**的，因为 CONFIG_ESPRESSIF_BLE 的 Kconfig 只存在于
+#         RISC-V 侧，Xtensa 侧缺失，不注入则 esp_bt.h 静态断言直接编译失败
+#         详见 HANDOFF-AI-ONBOARDING.md §5.3
+#   3. 写构建指纹到 vendor 目录的 .btsh-build-info（便于回溯）
 #
 set -uo pipefail
 

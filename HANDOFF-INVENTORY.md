@@ -11,6 +11,7 @@
 | [`HANDOFF-AI-ONBOARDING.md`](HANDOFF-AI-ONBOARDING.md) | 项目是什么、做到哪、坑在哪、下一步 | ★ **从这里开始** |
 | [`HANDOFF-CURRENT-ISSUE.md`](HANDOFF-CURRENT-ISSUE.md) | **当前唯一阻塞问题的完整记录**（含 5 个待验证假设） | ★★ **要解决问题就读这份** |
 | [`HANDOFF-REPRODUCE.md`](HANDOFF-REPRODUCE.md) | 从零复现的完整步骤 + 精确版本清单 | 需要动手时读 |
+| [`HANDOFF-SCRIPTS-RUNBOOK.md`](HANDOFF-SCRIPTS-RUNBOOK.md) | **脚本手册与运维指南**（11 个脚本详解 + 故障速查 + 危险操作清单） | ★ 要用脚本时读 |
 | `HANDOFF-INVENTORY.md` | 本文件，文件导航 | — |
 
 ---
@@ -42,6 +43,12 @@
 4. [`scripts/setup/apply-board-ws2812.sh`](scripts/setup/apply-board-ws2812.sh)（板级补丁脚本）
 5. [`scripts/build/build-n16r8.sh`](scripts/build/build-n16r8.sh)（构建入口）
 6. [`thirdparty/patches/`](thirdparty/patches/)（两个上游 bug 补丁）
+
+### 要用脚本 / 排查环境故障
+
+1. [`HANDOFF-SCRIPTS-RUNBOOK.md`](HANDOFF-SCRIPTS-RUNBOOK.md) — **11 个脚本逐个详解**
+2. 同文档 §4「故障速查表」— 按症状查根因
+3. 同文档 §6「危险操作清单」— **动手前必看**
 
 ### 要了解踩过的坑
 

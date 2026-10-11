@@ -23,6 +23,7 @@
 | **[HANDOFF-CURRENT-ISSUE.md](HANDOFF-CURRENT-ISSUE.md)** | **当前唯一阻塞问题的完整记录** —— GATT 服务发现失败，含 5 个待验证假设 |
 | **[HANDOFF-REPRODUCE.md](HANDOFF-REPRODUCE.md)** | **从零复现指南** —— 精确版本清单、完整步骤、错误速查 |
 | **[HANDOFF-INVENTORY.md](HANDOFF-INVENTORY.md)** | **文件清单与阅读顺序** |
+| **[HANDOFF-SCRIPTS-RUNBOOK.md](HANDOFF-SCRIPTS-RUNBOOK.md)** | **脚本手册与运维指南** —— 11 个脚本各自解决什么坑、执行顺序、故障速查、危险操作清单 |
 
 ### 一句话进度
 

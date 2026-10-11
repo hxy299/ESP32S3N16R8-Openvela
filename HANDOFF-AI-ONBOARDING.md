@@ -102,6 +102,7 @@ bt_gatt_connected: conn 0x3fc94d50
 ├── HANDOFF-REPRODUCE.md          ← 从零复现的完整步骤与精确版本
 ├── HANDOFF-CURRENT-ISSUE.md      ← ★ 当前阻塞问题的详细记录
 ├── HANDOFF-INVENTORY.md          ← 文件清单与阅读顺序建议
+├── HANDOFF-SCRIPTS-RUNBOOK.md    ← 脚本手册与运维指南（11 个脚本 + 故障速查）
 │
 ├── config/boards/esp32s3-n16r8-generic/
 │   ├── defconfig.nsh             ← 最小可启动基线
