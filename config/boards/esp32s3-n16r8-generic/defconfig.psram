@@ -1,0 +1,125 @@
+#
+# NuttX defconfig — ESP32-S3-N16R8（芯路城开发板）
+# 配置名：psram
+#
+# ## 本配置目标
+#
+# 在已验证能启动的 `nsh` 基线之上，**只加一件事：启用 8MB Octal PSRAM**。
+# 目的是确认 PSRAM 能初始化成功、并被加入系统堆。
+#
+# ## 相对 defconfig.nsh 的改动（逐条）
+#
+#   1. CONFIG_ESP32S3_SPIRAM=y
+#      打开 SPI RAM 支持（顶层开关）。
+#
+#   2. CONFIG_ESP32S3_SPIRAM_MODE_OCT=y
+#      N16R8 的 PSRAM 是 **Octal（8 线）**，不是 Quad。实测芯片特性报
+#      `Embedded PSRAM 8MB (AP_3v3)`，WROOM-1 N16R8 规格即为 Octal。
+#
+#   3. CONFIG_ESP32S3_SPIRAM_TYPE_ESPPSRAM64=y   ★ 关键
+#      **刻意不用 TYPE_AUTO。**
+#      依据 Kconfig:940-948，SPIRAM_SIZE 由类型推导：
+#        TYPE_AUTO         -> SPIRAM_SIZE = -1   （未定，靠运行时探测）
+#        TYPE_ESPPSRAM64   -> SPIRAM_SIZE = 8388608 (8MB)
+#      上一份官方 eye 固件正是用了 TYPE_AUTO + MODE_OCT，结果启动挂死在
+#      段加载之后。这一次显式声明类型，避免 AUTO 在 Octal 模式下的不确定性。
+#
+#   4. CONFIG_ESP32S3_SPIRAM_BOOT_INIT=y
+#      启动时初始化（Kconfig 默认 y）。由 arch/xtensa/src/esp32s3/esp32s3_start.c
+#      在早期调用 esp_spiram_init()。
+#
+#   5. CONFIG_ESP32S3_SPIRAM_COMMON_HEAP=y
+#      把 PSRAM 追加到内核堆（flat build 的默认选择，见 Kconfig:1027）。
+#      这样 `free` 命令就能看到 PSRAM 容量，便于验证。
+#
+#   6. CONFIG_MM_REGIONS=2
+#      ★ 必需。内存区域数从 1 增到 2（内部 SRAM + PSRAM）。
+#      psram_octal 官方 defconfig 也是这么设的。
+#
+#   7. CONFIG_ESP32S3_SPIRAM_SPEED_40M=y
+#      先用保守的 40MHz。官方 psram_octal 也没提速。跑通后再考虑 80MHz。
+#
+# ## ⚠️ 一个上游代码 bug（务必注意）
+#
+# `arch/xtensa/src/esp32s3/esp32s3_start.c:395-406`：
+#
+#     if (esp_spiram_init() != OK)
+#       {
+#     #  if defined(ESP32S3_SPIRAM_IGNORE_NOTFOUND)     <-- 少了 CONFIG_ 前缀
+#         mwarn("SPIRAM Initialization failed!\n");
+#     #  else
+#         PANIC();
+#     #  endif
+#       }
+#
+# Kconfig 定义的是 `CONFIG_ESP32S3_SPIRAM_IGNORE_NOTFOUND`，
+# 而这里判断的是 `ESP32S3_SPIRAM_IGNORE_NOTFOUND`（无 CONFIG_ 前缀），
+# 因此**该兜底开关永远不生效** —— PSRAM 初始化一旦失败必然 PANIC。
+#
+# 结论：本配置必须一次配对，没有「失败也能启动」的退路。
+# 若烧录后 PANIC，就是这个原因，需回头核对 PSRAM 类型/模式/引脚。
+#
+# ## 验证方法
+#
+#   烧录后看两点：
+#     1. 启动日志无 PANIC，正常出现 nsh>
+#     2. `free` 命令的 total 应显著大于 nsh 基线的 405120 B
+#        （预期约为 405KB + 8MB）
+#
+# ## 构建与烧录
+#
+#   source ~/.openvela-proxy-env
+#   bash scripts/build/build-n16r8.sh psram
+#   python -m esptool --chip esp32s3 -p COM4 -b 921600 write_flash 0x0 nuttx/nuttx.bin
+#
+# CONFIG_ARCH_LEDS is not set
+# CONFIG_NSH_ARGCAT is not set
+# CONFIG_NSH_CMDOPT_HEXDUMP is not set
+CONFIG_ARCH="xtensa"
+CONFIG_ARCH_BOARD="esp32s3-devkit"
+CONFIG_ARCH_BOARD_COMMON=y
+CONFIG_ARCH_BOARD_ESP32S3_DEVKIT=y
+CONFIG_ARCH_CHIP="esp32s3"
+CONFIG_ARCH_CHIP_ESP32S3=y
+CONFIG_ARCH_CHIP_ESP32S3WROOM1N16R8=y
+CONFIG_ARCH_INTERRUPTSTACK=2048
+CONFIG_ARCH_STACKDUMP=y
+CONFIG_ARCH_XTENSA=y
+CONFIG_BOARD_LOOPSPERMSEC=16717
+CONFIG_BUILTIN=y
+CONFIG_DEBUG_FULLOPT=y
+CONFIG_DEBUG_SYMBOLS=y
+CONFIG_ESP32S3_UART0=y
+CONFIG_FS_PROCFS=y
+CONFIG_HAVE_CXX=y
+CONFIG_HAVE_CXXINITIALIZE=y
+CONFIG_IDLETHREAD_STACKSIZE=3072
+CONFIG_INIT_ENTRYPOINT="nsh_main"
+CONFIG_INIT_STACKSIZE=3072
+CONFIG_INTELHEX_BINARY=y
+CONFIG_LINE_MAX=64
+CONFIG_NSH_ARCHINIT=y
+CONFIG_NSH_BUILTIN_APPS=y
+CONFIG_NSH_FILEIOSIZE=512
+CONFIG_NSH_READLINE=y
+CONFIG_PREALLOC_TIMERS=4
+CONFIG_RAM_SIZE=114688
+CONFIG_RAM_START=0x20000000
+CONFIG_RR_INTERVAL=200
+CONFIG_SCHED_WAITPID=y
+CONFIG_START_DAY=6
+CONFIG_START_MONTH=12
+CONFIG_START_YEAR=2011
+CONFIG_SYSLOG_BUFFER=y
+CONFIG_SYSTEM_NSH=y
+CONFIG_UART0_SERIAL_CONSOLE=y
+#
+# ---- PSRAM（本配置的唯一新增点）----
+#
+CONFIG_ESP32S3_SPIRAM=y
+CONFIG_ESP32S3_SPIRAM_MODE_OCT=y
+CONFIG_ESP32S3_SPIRAM_TYPE_ESPPSRAM64=y
+CONFIG_ESP32S3_SPIRAM_BOOT_INIT=y
+CONFIG_ESP32S3_SPIRAM_COMMON_HEAP=y
+CONFIG_ESP32S3_SPIRAM_SPEED_40M=y
+CONFIG_MM_REGIONS=2

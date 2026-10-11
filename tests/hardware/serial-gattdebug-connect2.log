@@ -1,0 +1,164 @@
+btsh_light start
+BTSH: GATT service 0xff00 registered (8 attrs)
+bt_hci_cmd_create: opcode 200a param_len 1
+bt_buf_alloc: buf 0x3fc9528c type 0 reserve 1
+bt_hci_cmd_create: buf 0x3fc9528c
+bt_buf_extend: buf 0x3fc9528c len 3
+bt_buf_extend: buf 0x3fc9528c len 1
+bt_hci_cmd_send_sync: opcode 200a len 4
+bt_buf_addref: buf 0x3fc9528c (old) ref 1 type 0
+hci_tx_kthread: Sending command 200a buf 0x3fc9528c to driver
+bt_receive: data 0x3fca16bb len 6
+bt_buf_alloc: buf 0x3fc95244 type 1 reserve 1
+bt_buf_extend: buf 0x3fc95244 len 6
+bt_buf_release: buf 0x3fc9528c ref 2 type 0
+bt_buf_release: Remaining references: 1priority_rx_work: list 0x3fc94ca4
+priority_rx_work: buf 0x3fc95244 type 1 len 6
+bt_buf_consume: buf 0x3fc95244 len 2
+hci_cmd_complete: opcode 200a
+bt_buf_consume: buf 0x3fc95244 len 3
+hci_cmd_complete: Unhandled opcode 200a
+bt_buf_addref: buf 0x3fc95244 (old) ref 1 type 1
+bt_buf_release: buf 0x3fc9528c ref 1 type 0
+bt_buf_release: Buffer freed: 0x3fc9528c
+bt_buf_release: buf 0x3fc95244 ref 2 type 1
+bt_buf_release: Remaining references: 1
+
+bt_buf_release: buf 0x3fc95244 ref 1 type 1
+bt_buf_release: Buffer freed: 0x3fc95244
+bt_hci_cmd_create: opcode 2008 param_len 32
+bt_buf_alloc: buf 0x3fc95244 type 0 reserve 1
+bt_hci_cmd_create: buf 0x3fc95244
+bt_buf_extend: buf 0x3fc95244 len 3
+bt_buf_extend: buf 0x3fc95244 len 32
+bt_hci_cmd_send: opcode 2008 len 35
+bt_hci_cmd_create: opcode 2009 param_len 32
+bt_buf_alloc: buf 0x3fc9528c type 0 reserve 1
+bt_hci_cmd_create: buf 0x3fc9528c
+bt_buf_extend: buf 0x3fc9528c len 3
+bt_buf_extend: buf 0x3fc9528c len 32
+bt_hci_cmd_send: opcode 2009 len 35
+bt_hci_cmd_create: opcode 2006 param_len 15
+bt_buf_alloc: buf 0x3fc95274 type 0 reserve 1
+bt_hci_cmd_create: buf 0x3fc95274
+bt_buf_extend: buf 0x3fc95274 len 3
+bt_buf_extend: buf 0x3fc95274 len 15
+bt_hci_cmd_send: opcode 2006 len 18
+bt_hci_cmd_create: opcode 200a param_len 1
+bt_buf_alloc: buf 0x3fc9525c type 0 reserve 1
+bt_hci_cmd_create: buf 0x3fc9525c
+bt_buf_extend: buf 0x3fc9525c len 3
+bt_buf_extend: buf 0x3fc9525c len 1
+bt_hci_cmd_send_sync: opcode 200a len 4
+bt_buf_addref: buf 0x3fc95244 (old) ref 1 type 0
+hci_tx_kthread: Sending command 2008 buf 0x3fc95244 to driver
+bt_receive: data 0x3fca165f len 6
+bt_buf_alloc: buf 0x3fc952a4 type 1 reserve 1
+bt_buf_extend: buf 0x3fc952a4 len 6
+bt_buf_release: buf 0x3fc95244 ref 2 type 0
+bt_buf_release: Remaining references: 1
+priority_rx_work: list 0x3fc94ca4
+priority_rx_work: buf 0x3fc952a4 type 1 len 6
+bt_buf_consume: buf 0x3fc952a4 len 2
+hci_cmd_complete: opcode 2008
+bt_buf_consume: buf 0x3fc952a4 len 3
+hci_cmd_complete: Unhandled opcode 2008
+bt_buf_release: buf 0x3fc95244 ref 1 type 0
+bt_buf_release: Buffer freed: 0x3fc95244
+bt_buf_release: buf 0x3fc952a4 ref 1 type 1
+bt_buf_release: Buffer freed: 0x3fc952a4
+bt_buf_addref: buf 0x3fc9528c (old) ref 1 type 0
+hci_tx_kthread: Sending command 2009 buf 0x3fc9528c to driver
+bt_receive: data 0x3fca165f len 6
+bt_buf_alloc: buf 0x3fc952a4 type 1 reserve 1
+bt_buf_extend: buf 0x3fc952a4 len 6
+bt_buf_release: buf 0x3fc9528c ref 2 type 0
+bt_buf_release: Remaining references: 1priority_rx_work: list 0x3fc94ca4
+priority_rx_work: buf 0x3fc952a4 type 1 len 6
+bt_buf_consume: buf 0x3fc952a4 len 2
+hci_cmd_complete: opcode 2009
+bt_buf_consume: buf 0x3fc952a4 len 3
+hci_cmd_complete: Unhandled opcode 2009
+bt_buf_release: buf 0x3fc9528c ref 1 type 0
+bt_buf_release: Buffer freed: 0x3fc9528c
+bt_buf_release: buf 0x3fc952a4 ref 1 type 1
+bt_buf_release: Buffer freed: 0x3fc952a4
+
+bt_buf_addref: buf 0x3fc95274 (old) ref 1 type 0
+hci_tx_kthread: Sending command 2006 buf 0x3fc95274 to driver
+bt_receive: data 0x3fca165f len 6
+bt_buf_alloc: buf 0x3fc952a4 type 1 reserve 1
+bt_buf_extend: buf 0x3fc952a4 len 6
+bt_buf_release: buf 0x3fc95274 ref 2 type 0
+bt_buf_release: Remaining references: 1priority_rx_work: list 0x3fc94ca4
+priority_rx_work: buf 0x3fc952a4 type 1 len 6
+bt_buf_consume: buf 0x3fc952a4 len 2
+hci_cmd_complete: opcode 2006
+bt_buf_consume: buf 0x3fc952a4 len 3
+hci_cmd_complete: Unhandled opcode 2006
+bt_buf_release: buf 0x3fc95274 ref 1 type 0
+bt_buf_release: Buffer freed: 0x3fc95274
+bt_buf_release: buf 0x3fc952a4 ref 1 type 1
+bt_buf_release: Buffer freed: 0x3fc952a4
+
+bt_buf_addref: buf 0x3fc9525c (old) ref 1 type 0
+hci_tx_kthread: Sending command 200a buf 0x3fc9525c to driver
+bt_receive: data 0x3fca169f len 6
+bt_buf_alloc: buf 0x3fc952a4 type 1 reserve 1
+bt_buf_extend: buf 0x3fc952a4 len 6
+bt_buf_release: buf 0x3fc9525c ref 2 type 0priority_rx_work: list 0x3fc94ca4
+priority_rx_work: buf 0x3fc952a4 type 1 len 6
+bt_buf_consume: buf 0x3fc952a4 len 2
+hci_cmd_complete: opcode 200a
+bt_buf_consume: buf 0x3fc952a4 len 3
+hci_cmd_complete: Unhandled opcode 200a
+bt_buf_addref: buf 0x3fc952a4 (old) ref 1 type 1
+bt_buf_release: buf 0x3fc9525c ref 2 type 0
+bt_buf_release: Remaining references: 1
+bt_buf_release: buf 0x3fc952a4 ref 2 type 1
+bt_buf_release: Remaining references: 1
+
+bt_buf_release: Buffer freed: 0x3fc9525c
+bt_buf_release: buf 0x3fc952a4 ref 1 type 1
+bt_buf_release: Buffer freed: 0x3fc952a4
+BTSH: light OFF
+BTSH: advertising as "BTSH-LIGHT"
+nsh> [Kbt_receive: data 0x3fca1606 len 21
+bt_buf_alloc: buf 0x3fc952a4 type 1 reserve 1
+bt_buf_extend: buf 0x3fc952a4 len 21
+hci_rx_work: list 0x3fc94cb0
+hci_rx_work: buf 0x3fc952a4 type 1 len 21
+hci_event: event 62
+bt_buf_consume: buf 0x3fc952a4 len 2
+bt_buf_consume: buf 0x3fc952a4 len 1
+le_conn_complete: status 0 handle 1 role 1 7C:FA:80:EF:CE:2B (public)
+bt_keys_find_irk: 7C:FA:80:EF:CE:2B (public)
+bt_keys_find_irk: 7C:FA:80:EF:CE:2B (public)
+bt_conn_set_state: disconnected -> connected
+bt_conn_addref: handle 1 ref 2
+bt_conn_addref: handle 1 ref 3
+conn_tx_kthread: Started for handle 1
+conn_tx_kthread: calling nxsem_wait_uninterruptible()
+bt_smp_connected: conn 0x3fc94d50 handle 1
+bt_gatt_connected: conn 0x3fc94d50
+bt_conn_release: handle 1 ref 2
+bt_buf_release: buf 0x3fc952a4 ref 1 type 1
+bt_buf_release: Buffer freed: 0x3fc952a4
+bt bnep0 info
+btnet_ioctl: cmd=3400 arg=1070238624
+btnet_ioctl: ifname: bnep0
+Device: bnep0
+BDAddr: e0:72:a1:f2:8f:ea
+Flags:  0000
+Free:   20
+  ACL:  20
+  SCO:  0
+Max:
+  ACL:  24
+  SCO:  0
+MTU:
+  ACL:  70
+  SCO:  70
+Policy: 0
+Type:   0
+nsh> [K

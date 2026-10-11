@@ -1,0 +1,57 @@
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x8 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:2
+load:0x3fc8b230,len:0xd7c
+load:0x40374000,len:0x5140
+SHA-256 comparison failed:
+Calculated: 1909a789912936d36c832a7fc1d2eb6b3ac75d98c70a6e7dc04df40ef88e1e5e
+Expected: 0000000000a10000000000000000000000000000000000000000000000000000
+Attempting to boot anyway...
+entry 0x40374e3c
+*** Booting NuttX ***
+dram: lma 0x00000020 vma 0x3fc8b230 len 0xd7c    (3452)
+iram: lma 0x00000da4 vma 0x40374000 len 0x5140   (20800)
+padd: lma 0x00005ef8 vma 0x00000000 len 0xa100   (41216)
+imap: lma 0x00010000 vma 0x42030000 len 0x15fa0  (90016)
+padd: lma 0x00025fa8 vma 0x00000000 len 0xa050   (41040)
+dmap: lma 0x00030000 vma 0x3c010000 len 0x2b10   (11024)
+total segments stored 6
+
+NuttShell (NSH)
+nsh> [Khelp
+help usage:  help [-v] [<cmd>]
+
+    .           cp          exit        ls          rm          uname       
+    [           cmp         expr        mkdir       rmdir       umount      
+    ?           dirname     false       mkrd        set         unset       
+    alias       dd          fdinfo      mount       sleep       uptime      
+    unalias     df          free        mv          source      usleep      
+    basename    dmesg       help        pidof       test        watch       
+    break       echo        hexdump     printf      time        xd          
+    cat         env         kill        ps          true        wait        
+    cd          exec        pkill       pwd         truncate    
+
+Builtin Apps:
+    nsh    sh     
+nsh> [Kuname -a
+NuttX 0.0.0 5315a2b7f0-dirty Oct 10 2026 21:53:59 xtensa esp32s3-devkit
+nsh> [Kfree
+      total       used       free    maxused    maxfree  nused  nfree name
+     405120       7776     397344       8136     397344     24      1 Umem
+nsh> [Kps
+  PID GROUP PRI POLICY   TYPE    NPX STATE    EVENT     SIGMASK            STACK COMMAND
+    0     0   0 FIFO     Kthread   - Ready              0000000000000000 0003040 CPU0 IDLE
+    1     1 100 RR       Task      - Running            0000000000000000 0003000 nsh_main
+nsh> [Kls /dev
+/dev:
+ console
+ null
+ ttyS0
+ zero
+nsh> [Kcat /proc/version
+NuttX version 0.0.0 5315a2b7f0-dirty Oct 10 2026 21:53:59 ../vendor/espressif/boards/esp32s3/esp32s3-devkit/configs/nsh
+nsh> [Kuptime
+00:00:13 up  0:00, load average: 0.00, 0.00, 0.00
+nsh> [K

@@ -1,0 +1,73 @@
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x8 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:2
+load:0x3fc95f80,len:0x2bbc
+load:0x40374000,len:0xac6c
+SHA-256 comparison failed:
+Calculated: bd4f993fe368baac5b95473de841a1825b8be121c9f6317091bd8a1e77932b46
+Expected: 0000000090270000000000000000000000000000000000000000000000000000
+Attempting to boot anyway...
+entry 0x40374f80
+*** Booting NuttX ***
+dram: lma 0x00000020 vma 0x3fc95f80 len 0x2bbc   (11196)
+iram: lma 0x00002be4 vma 0x40374000 len 0xac6c   (44140)
+padd: lma 0x0000d868 vma 0x00000000 len 0x2790   (10128)
+imap: lma 0x00010000 vma 0x42030000 len 0x42e14  (273940)
+padd: lma 0x00052e1c vma 0x00000000 len 0xd1dc   (53724)
+dmap: lma 0x00060000 vma 0x3c010000 len 0x6ef4   (28404)
+total segments stored 6
+
+NuttShell (NSH)
+nsh> [Kfree
+      total       used       free    maxused    maxfree  nused  nfree name
+    8741616      55560    8686056      55936    8388592    107      2 Umem
+nsh> [Kps
+  PID GROUP PRI POLICY   TYPE    NPX STATE    EVENT     SIGMASK            STACK COMMAND
+    0     0   0 FIFO     Kthread   - Ready              0000000000000000 0003040 CPU0 IDLE
+    1     0 224 RR       Kthread   - Waiting  Semaphore 0000000000000000 0004016 hpwork 0x3fc96840 0x3fc9688c
+    2     0 100 RR       Kthread   - Waiting  Semaphore 0000000000000000 0004016 lpwork 0x3fc967c0 0x3fc9680c
+    3     3 100 RR       Task      - Running            0000000000000000 0008128 nsh_main
+    4     0 223 RR       Kthread   - Waiting  Semaphore 0000000000000000 0004032 rt_timer
+    5     0 253 RR       Kthread   - Waiting  Semaphore 0000000000000000 0004024 btController
+    6     0 100 RR       Kthread   - Waiting  MQ empty  0000000000000000 0004032 BT_HCI_Tx
+nsh> [Khelp
+help usage:  help [-v] [<cmd>]
+
+    .           cp          expr        pkill       reboot      uname       
+    [           cmp         false       ls          rm          umount      
+    ?           dirname     fdinfo      mkdir       rmdir       unset       
+    alias       dd          free        mkrd        set         uptime      
+    unalias     df          help        mount       sleep       usleep      
+    arp         dmesg       hexdump     mv          source      watch       
+    basename    echo        ifconfig    pidof       test        xd          
+    break       env         ifdown      printf      time        wait        
+    cat         exec        ifup        ps          true        
+    cd          exit        kill        pwd         truncate    
+
+Builtin Apps:
+    bt     nsh    sh     
+nsh> [Kbt
+ERROR: Missing interface name
+
+Usage:
+
+	bt <ifname> <cmd> [option [option [option...]]]
+
+Where <cmd> [option [option [option...]]] is one of:
+
+	help
+	info      	[-h]
+	features  	[-h] [le]
+	scan      	[-h] <start [-d]|get|stop>
+	advertise 	[-h] <start|stop>
+	security  	[-h] <addr> public|random <level>
+	gatt      	[-h] <cmd> [option [option [option...]]]
+
+Use the -h option on any command to get more info.
+nsh> [Kifconfig
+bnep0	Link encap:UNSPEC at DOWN mtu -9
+	inet addr:0.0.0.0 DRaddr:0.0.0.0 Mask:0.0.0.0
+
+nsh> [K

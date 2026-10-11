@@ -1,0 +1,53 @@
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x8 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:2
+load:0x3fc95f80,len:0x2bbc
+load:0x40374000,len:0xac6c
+SHA-256 comparison failed:
+Calculated: bd4f993fe368baac5b95473de841a1825b8be121c9f6317091bd8a1e77932b46
+Expected: 0000000090270000000000000000000000000000000000000000000000000000
+Attempting to boot anyway...
+entry 0x40374f80
+*** Booting NuttX ***
+dram: lma 0x00000020 vma 0x3fc95f80 len 0x2bbc   (11196)
+iram: lma 0x00002be4 vma 0x40374000 len 0xac6c   (44140)
+padd: lma 0x0000d868 vma 0x00000000 len 0x2790   (10128)
+imap: lma 0x00010000 vma 0x42030000 len 0x42e14  (273940)
+padd: lma 0x00052e1c vma 0x00000000 len 0xd1dc   (53724)
+dmap: lma 0x00060000 vma 0x3c010000 len 0x6ef4   (28404)
+total segments stored 6
+
+NuttShell (NSH)
+nsh> [Kbt bnep0 advertise start
+ERROR:  ioctl(SIOCBTADVSTART) failed: 5
+nsh> [Kbt bnep0 advertise start
+ERROR:  ioctl(SIOCBTADVSTART) failed: 5
+nsh> [Kbt bnep0 advertise stop
+nsh> [Kbt bnep0 advertise start
+nsh> [Kbt bnep0 scan start
+nsh> [Kbt bnep0 scan get
+Scan result:
+ 1.	addr:            0b:6b:90:33:23:26 type: 1
+	rssi:            -70
+	response type:   3
+	advertiser data: 1e ff 06 00 01 0f 20 22 4b f0 f3 48 70 41 94 5b	                 98 fe 9a 76 00 3c 18 76 60 4a f4 12 ea 12 cd
+ 2.	addr:            39:16:35:8b:61:f9 type: 1
+	rssi:            -47
+	response type:   3
+	advertiser data: 1e ff 06 00 01 0f 20 22 32 b4 eb 2f 01 d4 a7 96	                 29 79 43 85 bc 8d 8a 53 dd b8 66 c8 cb 3a e8
+ 3.	addr:            88:56:a6:01:2b:ba type: 0
+	rssi:            -49
+	response type:   0
+	advertiser data: 02 01 06 03 03 a1 f0 13 09 57 61 6c 6c 65 2d 38	                 38 35 36 41 36 30 31 32 42 42 38 02 0a 09
+ 4.	addr:            10:5f:50:5e:9c:17 type: 1
+	rssi:            -37
+	response type:   3
+	advertiser data: 1e ff 06 00 01 0f 20 22 83 ad 9f 15 d2 35 98 bc	                 56 cc 95 41 cf 11 be 41 de f8 1b 3f c5 f4 a0
+ 5.	addr:            08:ca:0b:af:50:2b type: 1
+	rssi:            -70
+	response type:   3
+	advertiser data: 1e ff 06 00 01 09 20 22 59 92 39 9e 29 c3 58 76	                 75 cd 65 27 47 94 25 30 4f e3 ab f4 75 31 7d
+nsh> [Kbt bnep0 scan stop
+nsh> [K

@@ -1,0 +1,81 @@
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x8 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:2
+load:0x3fc95f80,len:0x2bbc
+load:0x40374000,len:0xac6c
+SHA-256 comparison failed:
+Calculated: bd4f993fe368baac5b95473de841a1825b8be121c9f6317091bd8a1e77932b46
+Expected: 0000000090270000000000000000000000000000000000000000000000000000
+Attempting to boot anyway...
+entry 0x40374f80
+*** Booting NuttX ***
+dram: lma 0x00000020 vma 0x3fc95f80 len 0x2bbc   (11196)
+iram: lma 0x00002be4 vma 0x40374000 len 0xac6c   (44140)
+padd: lma 0x0000d868 vma 0x00000000 len 0x2790   (10128)
+imap: lma 0x00010000 vma 0x42030000 len 0x42e14  (273940)
+padd: lma 0x00052e1c vma 0x00000000 len 0xd1dc   (53724)
+dmap: lma 0x00060000 vma 0x3c010000 len 0x6ef4   (28404)
+total segments stored 6
+
+NuttShell (NSH)
+nsh> [Kbt bnep0 info
+Device: bnep0
+BDAddr: e0:72:a1:f2:8f:ea
+Flags:  0000
+Free:   20
+  ACL:  20
+  SCO:  0
+Max:
+  ACL:  24
+  SCO:  0
+MTU:
+  ACL:  70
+  SCO:  70
+Policy: 0
+Type:   0
+nsh> [Kbt bnep0 features le
+Page 0:
+	ff f9 01 08  00 00 00 00
+Page 1:
+	00 00 00 00  00 00 00 00
+Page 2:
+	00 00 00 00  00 00 00 00
+nsh> [Kbt bnep0 advertise start
+ERROR:  ioctl(SIOCBTADVSTART) failed: 5
+nsh> [Kbt bnep0 advertise stop
+nsh> [Kbt bnep0 scan start
+nsh> [Kbt bnep0 scan get
+Scan result:
+ 1.	addr:            38:a1:4e:0e:b8:e3 type: 1
+	rssi:            -62
+	response type:   3
+	advertiser data: 1e ff 06 00 01 0f 20 22 e5 77 f3 3f 70 25 ee 24	                 bf 83 f6 ca 06 21 fc 08 07 05 06 95 83 96 36
+ 2.	addr:            57:f7:23:62:7d:59 type: 1
+	rssi:            -69
+	response type:   0
+	advertiser data: 02 01 1a 02 0a 08 0c ff 4c 00 10 07 3c 1f 9c d5	                 65 ea 48
+ 3.	addr:            28:45:ac:0e:34:ba type: 0
+	rssi:            -84
+	response type:   0
+	advertiser data: 02 01 04 03 ff 7d 02 03 19 c7 03 0f 16 ee fd 01	                 20 00 01 00 00 00 00 00 00 03 01
+ 4.	addr:            28:45:ac:0e:34:ba type: 0
+	rssi:            -83
+	response type:   4
+	advertiser data: 12 09 48 55 41 57 45 49 20 4d 2d 50 65 6e 63 69	                 6c 20 33
+ 5.	addr:            88:56:a6:01:2b:ba type: 0
+	rssi:            -53
+	response type:   0
+	advertiser data: 02 01 06 03 03 a1 f0 13 09 57 61 6c 6c 65 2d 38	                 38 35 36 41 36 30 31 32 42 42 38 02 0a 09
+nsh> [Kbt bnep0 scan stop
+nsh> [Kps
+  PID GROUP PRI POLICY   TYPE    NPX STATE    EVENT     SIGMASK            STACK COMMAND
+    0     0   0 FIFO     Kthread   - Ready              0000000000000000 0003040 CPU0 IDLE
+    1     0 224 RR       Kthread   - Waiting  Semaphore 0000000000000000 0004016 hpwork 0x3fc96840 0x3fc9688c
+    2     0 100 RR       Kthread   - Waiting  Semaphore 0000000000000000 0004016 lpwork 0x3fc967c0 0x3fc9680c
+    3     3 100 RR       Task      - Running            0000000000000000 0008128 nsh_main
+    4     0 223 RR       Kthread   - Waiting  Semaphore 0000000000000000 0004032 rt_timer
+    5     0 253 RR       Kthread   - Waiting  MQ empty  0000000000000000 0004024 btController
+    6     0 100 RR       Kthread   - Waiting  MQ empty  0000000000000000 0004032 BT_HCI_Tx
+nsh> [K

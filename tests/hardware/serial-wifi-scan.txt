@@ -1,0 +1,57 @@
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x8 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:2
+load:0x3fcb0640,len:0x44bc
+load:0x40374000,len:0xf380
+SHA-256 comparison failed:
+Calculated: 57790a10abaafd0d3318eae8d44f8574cfe62c3cd710f93760260dbbb2808aa8
+Expected: 0000000080c70000000000000000000000000000000000000000000000000000
+Attempting to boot anyway...
+entry 0x40374fc0
+*** Booting NuttX ***
+dram: lma 0x00000020 vma 0x3fcb0640 len 0x44bc   (17596)
+iram: lma 0x000044e4 vma 0x40374000 len 0xf380   (62336)
+padd: lma 0x00013878 vma 0x00000000 len 0xc780   (51072)
+imap: lma 0x00020000 vma 0x42050000 len 0x97414  (619540)
+padd: lma 0x000b741c vma 0x00000000 len 0x8bdc   (35804)
+dmap: lma 0x000c0000 vma 0x3c010000 len 0x1c05c  (114780)
+total segments stored 6
+
+NuttShell (NSH)
+nsh> [Kwapi show wlan0
+wlan0 Configuration:
+       IP: 0.0.0.0
+  NetMask: 255.255.255.0
+Frequency: 2412
+     Flag: WAPI_FREQ_AUTO
+  Channel: 1
+Frequency: 2412
+    ESSID: 
+     Flag: WAPI_ESSID_OFF
+     Mode: WAPI_MODE_MANAGED
+       AP: ff:ff:ff:ff:ff:ff
+  BitRate: 0
+     Flag: WAPI_BITRATE_AUTO
+  TxPower: 20
+     Flag: WAPI_TXPOWER_DBM
+    Sense: -128
+  Country: 01
+nsh> [Kwapi scan wlan0
+bssid / frequency / signal level / encode / ssid
+50:9a:88:c0:e3:e0	2437	-86	0800	Jin-innovalley
+3c:86:9a:9f:33:4c	2437	-56	0800	ZBCK-E
+3e:86:9a:9f:33:50	2437	-52	0800	ZBCK-E_Wi-Fi5
+nsh> [Kwapi scan_results wlan0
+nsh> [Kps
+  PID GROUP PRI POLICY   TYPE    NPX STATE    EVENT     SIGMASK            STACK COMMAND
+    0     0   0 FIFO     Kthread   - Ready              0000000000000000 0003024 CPU0 IDLE
+    1     0 224 RR       Kthread   - Waiting  Semaphore 0000000000000000 0004000 hpwork 0x3fcb0f00 0x3fcb0f4c
+    2     0 100 RR       Kthread   - Waiting  Semaphore 0000000000000000 0004000 lpwork 0x3fcb0e80 0x3fcb0ecc
+    3     3 100 RR       Task      - Running            0000000000000000 0008112 nsh_main
+    4     0 223 RR       Kthread   - Waiting  Semaphore 0000000000000000 0004016 rt_timer
+    5     0 253 RR       Kthread   - Waiting  Semaphore 0000000000000000 0004016 btController
+    6     0 120 RR       Kthread   - Waiting  MQ empty  0000000000000000 0004008 BT_HCI_Tx
+    7     0 253 RR       Kthread   - Waiting  MQ empty  0000000000000000 0006592 wifi
+nsh> [K

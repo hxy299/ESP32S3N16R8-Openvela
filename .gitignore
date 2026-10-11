@@ -1,0 +1,99 @@
+# .gitignore — Openvela ESP32-S3 Bluetooth SmartHome
+
+# ---- 编译产物 ----
+build/
+out/
+cmake_out/
+
+# 例外：scripts/build/ 是本项目的构建**脚本**目录，不是编译产物目录。
+# 上面的 `build/` 规则会连它一起忽略，必须显式挖回来。
+!scripts/build/
+!scripts/build/**
+
+*.o
+*.a
+*.elf
+*.bin
+*.hex
+*.map
+*.lst
+*.d
+*.su
+nuttx
+nuttx.bin
+nuttx.hex
+nuttx.map
+nuttx.manifest
+System.map
+.dep
+Make.dep
+*.tmp
+
+# ---- 配置生成物（保留 defconfig 快照，忽略生成结果） ----
+.config
+.config.old
+.config.orig
+include/config/
+include/generated/
+defconfig.tmp
+
+# ---- 烧录/调试产物 ----
+*.log
+serial-*.txt
+flash_args
+flash_project_args
+flasher_args.json
+bootloader/
+partition_table/
+
+# 例外：tests/hardware/ 下的串口日志是**有意归档的实测证据**，
+# 是「这台板子确实跑起来了」的唯一原始凭据，必须入库。
+#
+# ⚠️ 这里同时要挖回 *.log —— 上面的 `*.log` 规则本意是忽略构建/调试日志，
+#    但内核日志（serial-gattdebug-connect*.log）恰恰是排查 BLE 问题的
+#    最关键证据，绝不能漏。曾经漏过一次，导致交接包缺证据。
+!tests/hardware/serial-*.txt
+!tests/hardware/serial-*.log
+
+# 例外：assets/firmware/ 是**有意归档**的预编译固件，不是编译副产物。
+# 上面的 *.bin / *.map 会连它一起忽略，必须显式挖回来。
+# 归档理由：完整重建依赖 GitHub（受限网络下常不可用），
+#           保留一份已验证的固件用于实机验证。见 assets/firmware/README.md
+#
+# ⚠️ 注意：**有意不挖回 *.elf**。
+#   7 个 ELF 合计约 59 MB（单个 6–13 MB），对本项目价值很低：
+#     - 烧录用的是 .bin（Simple Boot，直接烧到 0x0）
+#     - 调试所需的符号地址由 System.map-n16r8-* 提供
+#     - 反汇编可由 .bin 离线完成
+#   因此 ELF 只保留在本地（备份于仓库外的 _elf-backup/），不入库。
+#   若确实需要某个 ELF，跑一次对应配置的构建即可重新生成。
+!assets/firmware/
+!assets/firmware/**
+!assets/firmware/*.bin
+!assets/firmware/*.map
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+
+# ---- 编辑器 / IDE ----
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.cache/
+compile_commands.json
+.clangd/
+
+# ---- OS ----
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---- 大体积本地参考副本（原厂资料较大，按需取消忽略） ----
+# assets/reference/*.pdf

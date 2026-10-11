@@ -1,0 +1,32 @@
+ESP-ROM:esp32s3-202103ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x8 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:2
+load:0x3fc8b840,len:0xd8c
+load:0x40374000,len:0x5790
+SHA-256 comparison failed:
+Calculated: 1843aeb3b76246b12e92b9834a5081bbf1c518e94c5b64383bf1b9f904997cc8
+Expected: 00000000a09a0000000000000000000000000000000000000000000000000000
+Attempting to boot anyway...
+entry 0x40374ef8
+*** Booting NuttX ***
+dram: lma 0x00000020 vma 0x3fc8b840 len 0xd8c    (3468)
+iram: lma 0x00000db4 vma 0x40374000 len 0x5790   (22416)
+padd: lma 0x00006558 vma 0x00000000 len 0x9aa0   (39584)
+imap: lma 0x00010000 vma 0x42030000 len 0x160a4  (90276)
+padd: lma 0x000260ac vma 0x00000000 len 0x9f4c   (40780)
+dmap: lma 0x00030000 vma 0x3c010000 len 0x2b38   (11064)
+total segments stored 6
+
+NuttShell (NSH)
+nsh> [Kfree
+      total       used       free    maxused    maxfree  nused  nfree name
+    8792160       7808    8784352       8184    8388592     26      2 Umem
+nsh> [Kps
+  PID GROUP PRI POLICY   TYPE    NPX STATE    EVENT     SIGMASK            STACK COMMAND
+    0     0   0 FIFO     Kthread   - Ready              0000000000000000 0003040 CPU0 IDLE
+    1     1 100 RR       Task      - Running            0000000000000000 0003000 nsh_main
+nsh> [Kuname -a
+NuttX 0.0.0 5315a2b7f0-dirty Oct 10 2026 22:04:59 xtensa esp32s3-devkit
+nsh> [K

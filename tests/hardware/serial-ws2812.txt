@@ -1,0 +1,49 @@
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x8 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:2
+load:0x3fc95f80,len:0x2bec
+load:0x40374000,len:0xac6c
+SHA-256 comparison failed:
+Calculated: 33732eaffad99efe2a0b3e305f1c44624d11f29dc768d6d9f0219457ee24d5c4
+Expected: 0000000060270000000000000000000000000000000000000000000000000000
+Attempting to boot anyway...
+entry 0x40374f80
+*** Booting NuttX ***
+dram: lma 0x00000020 vma 0x3fc95f80 len 0x2bec   (11244)
+iram: lma 0x00002c14 vma 0x40374000 len 0xac6c   (44140)
+padd: lma 0x0000d898 vma 0x00000000 len 0x2760   (10080)
+imap: lma 0x00010000 vma 0x42030000 len 0x43e48  (278088)
+padd: lma 0x00053e50 vma 0x00000000 len 0xc1a8   (49576)
+dmap: lma 0x00060000 vma 0x3c010000 len 0x73f8   (29688)
+total segments stored 6
+
+NuttShell (NSH)
+nsh> [Kls /dev
+/dev:
+ console
+ leds0
+ null
+ random
+ timer0
+ ttyS0
+ zero
+nsh> [Kws2812 -h
+Usage: ws2812 [OPTIONS]
+
+Arguments are "sticky".  For example, once the device path is
+specified, that path will be re-used until it is changed.
+  [-p path] selects the ws2812 device.  Default: /dev/leds0 Current: /dev/leds0
+  [-l leds] selects number of ws2812s in the chain.  Default: 1 Current: 1
+  [-r repeat] selects the number change cycles.  Default: 4 Current: 4
+  [-d delay] selects delay between updates.  Default: 20000 us Current: 20000 us
+nsh> [Kws2812 -p /dev/leds0 32 0 0
+Invalid options format: 32
+nsh> [Kws2812 -p /dev/leds0 0 32 0
+Invalid options format: 0
+nsh> [Kws2812 -p /dev/leds0 0 0 32
+Invalid options format: 0
+nsh> [Kws2812 -p /dev/leds0 0 0 0
+Invalid options format: 0
+nsh> [K

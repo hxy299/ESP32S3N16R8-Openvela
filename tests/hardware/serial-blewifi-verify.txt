@@ -1,0 +1,126 @@
+ESP-ROM:esp32s3-2021þESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x8 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:2
+load:0x3fcb0640,len:0x44bc
+load:0x40374000,len:0xf380
+SHA-256 comparison failed:
+Calculated: 57790a10abaafd0d3318eae8d44f8574cfe62c3cd710f93760260dbbb2808aa8
+Expected: 0000000080c70000000000000000000000000000000000000000000000000000
+Attempting to boot anyway...
+entry 0x40374fc0
+*** Booting NuttX ***
+dram: lma 0x00000020 vma 0x3fcb0640 len 0x44bc   (17596)
+iram: lma 0x000044e4 vma 0x40374000 len 0xf380   (62336)
+padd: lma 0x00013878 vma 0x00000000 len 0xc780   (51072)
+imap: lma 0x00020000 vma 0x42050000 len 0x97414  (619540)
+padd: lma 0x000b741c vma 0x00000000 len 0x8bdc   (35804)
+dmap: lma 0x000c0000 vma 0x3c010000 len 0x1c05c  (114780)
+total segments stored 6
+
+NuttShell (NSH)
+nsh> [Kfree
+      total       used       free    maxused    maxfree  nused  nfree name
+    8626992      90640    8536352      91016    8388592    166      4 Umem
+nsh> [Kps
+  PID GROUP PRI POLICY   TYPE    NPX STATE    EVENT     SIGMASK            STACK COMMAND
+    0     0   0 FIFO     Kthread   - Ready              0000000000000000 0003024 CPU0 IDLE
+    1     0 224 RR       Kthread   - Waiting  Semaphore 0000000000000000 0004000 hpwork 0x3fcb0f00 0x3fcb0f4c
+    2     0 100 RR       Kthread   - Waiting  Semaphore 0000000000000000 0004000 lpwork 0x3fcb0e80 0x3fcb0ecc
+    3     3 100 RR       Task      - Running            0000000000000000 0008112 nsh_main
+    4     0 223 RR       Kthread   - Waiting  Semaphore 0000000000000000 0004016 rt_timer
+    5     0 253 RR       Kthread   - Waiting  Semaphore 0000000000000000 0004016 btController
+    6     0 120 RR       Kthread   - Waiting  MQ empty  0000000000000000 0004008 BT_HCI_Tx
+    7     0 253 RR       Kthread   - Waiting  MQ empty  0000000000000000 0006592 wifi
+nsh> [Kifconfig
+bnep0	Link encap:UNSPEC at DOWN mtu -9
+	inet addr:0.0.0.0 DRaddr:0.0.0.0 Mask:0.0.0.0
+
+wlan0	Link encap:Ethernet HWaddr e0:72:a1:f2:8f:e8 at UP mtu 1500
+	inet addr:0.0.0.0 DRaddr:10.0.0.1 Mask:255.255.255.0
+
+wlan1	Link encap:Ethernet HWaddr e0:72:a1:f2:8f:e9 at DOWN mtu 1500
+	inet addr:0.0.0.0 DRaddr:0.0.0.0 Mask:0.0.0.0
+
+nsh> [Kwapi -h
+Usage:
+	wapi show         <ifname>
+	wapi scan         <ifname>
+	wapi pscan        <ifname>
+	wapi scan_results <ifname>
+	wapi ip           <ifname> <IP address>
+	wapi mask         <ifname> <mask>
+	wapi freq         <ifname> <frequency>  <index/flag>
+	wapi essid        <ifname> <essid>      <index/flag>
+	wapi psk          <ifname> <passphrase> <index/flag> [wpa]
+	wapi disconnect   <ifname>
+	wapi mode         <ifname>              <index/mode>
+	wapi ap           <ifname>              <MAC address>
+	wapi bitrate      <ifname> <bitrate>    <index/flag>
+	wapi txpower      <ifname> <txpower>    <index/flag>
+	wapi country      <ifname> <country code>
+	wapi sense        <ifname>
+	wapi pta_prio     <ifname>  <index/flag>
+	wapi power_save   <ifname>  <on|off>
+	wapi help
+
+Frequency Flags:
+	[0] WAPI_FREQ_AUTO
+	[1] WAPI_FREQ_FIXED
+
+ESSID Flags:
+	[0] WAPI_ESSID_OFF
+	[1] WAPI_ESSID_ON
+	[2] WAPI_ESSID_DELAY_ON
+
+Passphrase algorithm Flags:
+	[0] WPA_ALG_NONE
+	[1] WPA_ALG_WEP
+	[2] WPA_ALG_TKIP
+	[3] WPA_ALG_CCMP
+
+Passphrase WPA version:
+	[0] WPA_VER_NONE
+	[1] WPA_VER_1
+	[2] WPA_VER_2
+	[3] WPA_VER_3
+
+Operating Modes:
+	[0] WAPI_MODE_AUTO
+	[1] WAPI_MODE_ADHOC
+	[2] WAPI_MODE_MANAGED
+	[3] WAPI_MODE_MASTER
+	[4] WAPI_MODE_REPEAT
+	[5] WAPI_MODE_SECOND
+	[6] WAPI_MODE_MONITOR
+	[7] WAPI_MODE_MESH
+
+Bitrate Flags:
+	[0] WAPI_BITRATE_AUTO
+	[1] WAPI_BITRATE_FIXED
+
+TX power Flags:
+	[0] WAPI_TXPOWER_DBM
+	[1] WAPI_TXPOWER_MWATT
+	[2] WAPI_TXPOWER_RELATIVE
+
+pta prio Flags:
+	[0] WAPI_PTA_PRIORITY_COEX_MAXIMIZED
+	[1] WAPI_PTA_PRIORITY_COEX_HIGH
+	[2] WAPI_PTA_PRIORITY_BALANCED
+	[3] WAPI_PTA_PRIORITY_WLAN_HIGHD
+	[4] WAPI_PTA_PRIORITY_WLAN_MAXIMIZED
+nsh> [Kbt bnep0 advertise stop
+nsh> [Kbt bnep0 advertise start
+nsh> [Kifconfig
+bnep0	Link encap:UNSPEC at DOWN mtu -9
+	inet addr:0.0.0.0 DRaddr:0.0.0.0 Mask:0.0.0.0
+
+wlan0	Link encap:Ethernet HWaddr e0:72:a1:f2:8f:e8 at UP mtu 1500
+	inet addr:0.0.0.0 DRaddr:10.0.0.1 Mask:255.255.255.0
+
+wlan1	Link encap:Ethernet HWaddr e0:72:a1:f2:8f:e9 at DOWN mtu 1500
+	inet addr:0.0.0.0 DRaddr:0.0.0.0 Mask:0.0.0.0
+
+nsh> [K
