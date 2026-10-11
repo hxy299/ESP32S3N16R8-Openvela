@@ -231,11 +231,40 @@ static uint8_t g_dev_info[3] =
   0x00,
 };
 
-/* CCC（Client Characteristic Configuration）值。
- * Notify 必须声明 CCC，否则 bt_gatt_notify() 找不到对端配置。
+/* CCC（Client Characteristic Configuration）配置表。
+ *
+ * ★★ 这里曾经是一个严重 bug，导致 BLE 一连接就崩溃复位 ★★
+ *
+ * 错误写法（旧）：
+ *     static uint16_t g_state_ccc;          // 只有 2 字节
+ *     BT_GATT_CCC(HANDLE, VAL_HANDLE, &g_state_ccc, NULL)
+ *
+ * 为什么错：BT_GATT_CCC 宏把第 3 个参数当作
+ * **`struct bt_gatt_ccc_cfg_s` 的数组**，展开后是：
+ *     .user_data = (&(struct _bt_gatt_ccc_s) {
+ *                    .cfg     = _cfg,
+ *                    .cfg_len = nitems(_cfg),
+ *                    ...
+ *                  })
+ * 而 bt_gatt_attr_read_ccc() / write_ccc() 会立刻做
+ *     ccc->cfg_len      // 读 size_t
+ *     ccc->cfg[i].peer  // 解引用 FAR 指针
+ * 把 2 字节的 uint16_t 当成含指针的结构体来解引用，
+ * 读到的是垃圾指针 -> 访问非法地址 -> 复位。
+ *
+ * 表现（本项目实测）：
+ *     手机/电脑一发起 BLE 连接 -> le_conn_complete status 0
+ *     -> bt_gatt_connected -> 随即 rst:0x13 (GLITCH_RTC_RST)
+ *     -> 重启、重新广播、又被连、又崩（约 2 秒一轮）
+ *     日志里始终看不到 ACL 数据，因为板子在收到数据前就崩了。
+ *
+ * 正确写法：给一个配置项数组（对应"每个对端一份订阅配置"）。
+ * 注意 NuttX 全树**没有任何 BT_GATT_CCC 的使用范例**，
+ * 上面的宏展开是唯一的权威依据（bt_gatt.h:316-330）。
  */
 
-static uint16_t g_state_ccc;
+static struct bt_gatt_ccc_cfg_s g_state_ccc_cfg[CONFIG_BLUETOOTH_MAX_PAIRED];
+static struct _bt_gatt_ccc_s g_state_ccc;
 
 /****************************************************************************
  * Private Function Prototypes
@@ -273,8 +302,9 @@ static const struct bt_gatt_attr_s g_attrs[] =
   BT_GATT_DESCRIPTOR(BTSH_STATE_VAL_HANDLE, &g_state_uuid,
                      BT_GATT_PERM_READ,
                      btsh_read_state, NULL, NULL),
+  /* 第 3 个参数必须是**数组**（对应每个对端的订阅配置） */
   BT_GATT_CCC(BTSH_STATE_CCC_HANDLE, BTSH_STATE_VAL_HANDLE,
-              &g_state_ccc, NULL),
+              g_state_ccc_cfg, NULL),
 
   /* 设备信息：只读 3 字节 */
 
