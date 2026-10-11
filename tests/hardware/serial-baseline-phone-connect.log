@@ -1,0 +1,23 @@
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x8 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:2
+load:0x3fc95780,len:0x2b8c
+load:0x40374000,len:0xa4ec
+SHA-256 comparison failed:
+Calculated: e4e120434460a0d7cf9369cb3548949d08d925157a6cd0e523f0cf68f6cba109
+Expected: 00000000402f0000000000000000000000000000000000000000000000000000
+Attempting to boot anyway...
+entry 0x40374eac
+*** Booting NuttX ***
+dram: lma 0x00000020 vma 0x3fc95780 len 0x2b8c   (11148)
+iram: lma 0x00002bb4 vma 0x40374000 len 0xa4ec   (42220)
+padd: lma 0x0000d0b8 vma 0x00000000 len 0x2f40   (12096)
+imap: lma 0x00010000 vma 0x42030000 len 0x406dc  (263900)
+padd: lma 0x000506e4 vma 0x00000000 len 0xf914   (63764)
+dmap: lma 0x00060000 vma 0x3c010000 len 0x6ed4   (28372)
+total segments stored 6
+
+NuttShell (NSH)
+nsh> [K
