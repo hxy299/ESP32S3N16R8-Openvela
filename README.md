@@ -1,3 +1,18 @@
+> **当前状态（2026-10-11）**：**远程点灯已实现**（WiFi/TCP 版）。
+>
+> 🎉 `nsh> btsh_lightd &` 启动后，从电脑/手机 TCP 发 `ON` / `OFF`
+> 即可控制板子上的灯 —— 已实测验证。
+>
+> 详见 [阶段五文档](docs/stages/stage-05-tcp-remote-light.md)。
+>
+> ⚠️ BLE 路线**未走通**（openvela/NuttX 在 ESP32-S3 上的 BLE host 栈
+> 收不到 ACL 数据）。已用 ESP-IDF 对照实验证明**硬件完全正常**，
+> 问题在 NuttX 侧。完整分析见
+> [阶段四结论](docs/stages/stage-04-FINAL-nimble-not-viable.md) 与
+> [HANDOFF-CURRENT-ISSUE.md](HANDOFF-CURRENT-ISSUE.md)。
+
+---
+
 # Openvela ESP32-S3 Bluetooth SmartHome
 
 > 用 **openvela（Apache NuttX）** 系统，把下位机 **ESP32-S3-N16R8** 开发板改造成一块可由
