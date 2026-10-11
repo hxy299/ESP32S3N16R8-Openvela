@@ -177,16 +177,69 @@ BT_GATT_CCC(BTSH_STATE_CCC_HANDLE, BTSH_STATE_VAL_HANDLE,
 > 上面的宏展开是**唯一的权威依据**。这也是本项目踩到这个坑的原因 ——
 > 没有可参照的正确用法。
 
-### 4.3 修复状态
+### 4.3 修复验证（✅ 已通过）
 
-- 已修改：[`src/app/btsh_light_main.c`](../../src/app/btsh_light_main.c)
-- 已构建：`nuttx-n16r8-gattlight.bin`（423,892 B，
-  MD5 `98cfdb51487db01295c7f5a5d02b85c5`）
-- 已烧录
-- ⏳ **待验证**：需要一次真实的 BLE 连接来确认不再崩溃
+修复后重新构建烧录（`nuttx-n16r8-gattdebug.bin`，437,984 B），
+用 **Android nRF Connect 连了 3 次**，日志：
 
-**判定标准**：手机/电脑连接后，串口**不再出现** `rst:0x13`，
-且应能看到 ACL 数据（`Packet for CID` / `Received ATT code`）。
+```
+  >> 连接: le_conn_complete: status 0 handle 1 role 1 7C:53:C7:63:31:64 (random)
+  >> GATT 就绪
+  [ 60s] 复位=0 连接=1 GATT=1 ACL包=0 L2CAP=0 ATT=0
+  >> 连接: le_conn_complete: status 0 handle 1 role 1 7C:53:C7:63:31:64 (random)
+  >> GATT 就绪
+  [ 90s] 复位=0 连接=2 GATT=2 ACL包=0 L2CAP=0 ATT=0
+  >> 连接: le_conn_complete: status 0 handle 1 role 1 7C:53:C7:63:31:64 (random)
+  >> GATT 就绪
+  [120s] 复位=0 连接=3 GATT=3 ACL包=0 L2CAP=0 ATT=0
+```
+
+| 指标 | 修复前 | 修复后 |
+| --- | --- | --- |
+| 连接时的复位 | **每 2 秒一次**（GLITCH_RTC_RST 循环） | **0** ✅ |
+| `le_conn_complete` | 有，但随即崩溃 | ✅ 正常，且可重复 |
+| `bt_gatt_connected` | 有，随即崩溃 | ✅ 正常 |
+| 用户观测（nRF Connect） | 点 CONNECT 后板子反复重启 | 能连上（但仍会断开） |
+
+**结论：CCC 类型错误确实是崩溃根因，修复有效。**
+
+---
+
+## 4.4 ⚠️ 崩溃修好后，ACL 缺失问题依然存在
+
+修掉崩溃之后，**`ACL包=0 / L2CAP=0 / ATT=0` 依然成立**。
+
+也就是说：**下一节（§4.5）描述的「控制器不通过 VHCI 送 ACL 数据」
+是一个独立于崩溃的真实问题**，不是崩溃的副产品。
+
+> 📌 我在本轮中途曾误判为「ACL 缺失完全由崩溃导致」，
+> 现已更正：**两个问题是独立的，崩溃已修复，ACL 问题待解**。
+
+### 已排除的 ACL 相关怀疑点（新增）
+
+| # | 怀疑点 | 排除依据 |
+| --- | --- | --- |
+| 15 | 控制器→主机流控被禁用 | `# CONFIG_BLUETOOTH_CNTRL_HOST_FLOW_DISABLE is not set`（未禁用）；源码 `bt_hcicore.c:1443-1447` 展开为 `*enable = 1`（**已启用**） |
+| 16 | `Set Ctl→Host Flow Control` 的参数值错 | 同上，值为 1 ✓ |
+| 17 | `Host Buffer Size` 参数不合理 | `acl_pkts=20`、`acl_mtu=68`，均为合理值，控制器回 `cmd_complete` ✓ |
+| 18 | `le_conn_complete()` 之后漏发 HCI 命令 | 读实现：它只更新连接对象状态并调用 `bt_l2cap_connected()` / `bt_connected()`，**本就不需要发命令** ✓ |
+| 19 | 崩溃导致 ACL 收不到 | 崩溃已修复，ACL 仍为 0 —— **两问题独立** ✓ |
+
+### 用户侧观测（重要线索）
+
+Android nRF Connect 显示：**能看到 `BTSH-LIGHT`，点 CONNECT 后立即断开**。
+
+即链路层能建立（`le_conn_complete: status 0`），但**服务发现无法完成**，
+与「无 ATT 流量」一致。
+
+### 剩余方向
+
+| # | 方向 | 说明 |
+| --- | --- | --- |
+| C | 对照 ESP-IDF 的 `hci_driver_standard.c` | 本机 esp-hal 里有该文件（`components/bt/porting/transport/driver/vhci/`），检查 VHCI 传输层是否还有必需步骤 |
+| D | 调 `CONFIG_BT_CTRL_*` 静态参数 | 这些值来自 esp-hal 的静态 `sdkconfig.h`（如 `CONFIG_BT_CTRL_HCI_TL_EFF=1`），未必匹配 NuttX 的用法 |
+| E | 换 ESP32-C3 等平台对比 | 该芯片的 `ESPRESSIF_BLE` Kconfig 是完整的（见 `HANDOFF-AI-ONBOARDING.md` §5.3），可判断是否 ESP32-S3 特有 |
+| F | 用 ESP-IDF 烧同一块板验证硬件 | 若 ESP-IDF 下 BLE 正常，则确认是 NuttX 侧问题 |
 
 ---
 
